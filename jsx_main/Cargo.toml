@@ -1,0 +1,8 @@
+[package]
+name = "jsx_main"
+version = "0.1.0"
+authors = ["Robert <robert.balicki@gmail.com>"]
+
+[dependencies]
+jsx_macro = { path = "../jsx_macro" }
+jsx_types = { path = "../jsx_types" }

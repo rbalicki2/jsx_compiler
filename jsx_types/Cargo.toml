@@ -1,0 +1,6 @@
+[package]
+name = "jsx_types"
+version = "0.1.0"
+authors = ["Robert <robert.balicki@gmail.com>"]
+
+[dependencies]

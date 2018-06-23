@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+  "jsx_macro",
+  "jsx_types",
+  "jsx_main",
+]
