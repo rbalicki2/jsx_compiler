@@ -5,7 +5,6 @@ extern crate proc_macro;
 extern crate proc_macro2;
 #[macro_use]
 extern crate nom;
-// #[macro_use]
 extern crate quote;
 
 mod parsers;
