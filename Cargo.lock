@@ -3,6 +3,7 @@ name = "jsx_macro"
 version = "0.1.0"
 dependencies = [
  "jsx_types 0.1.0",
+ "nom 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro2 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -18,6 +19,27 @@ dependencies = [
 [[package]]
 name = "jsx_types"
 version = "0.1.0"
+
+[[package]]
+name = "libc"
+version = "0.2.42"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "memchr"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "libc 0.2.42 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "nom"
+version = "4.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "memchr 2.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "proc-macro2"
@@ -41,6 +63,9 @@ version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
+"checksum libc 0.2.42 (registry+https://github.com/rust-lang/crates.io-index)" = "b685088df2b950fccadf07a7187c8ef846a959c142338a48f9dc0b94517eb5f1"
+"checksum memchr 2.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "796fba70e76612589ed2ce7f45282f5af869e0fdd7cc6199fa1aa1f1d591ba9d"
+"checksum nom 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "898696750eb5c3ce5eb5afbfbe46e7f7c4e1936e19d3e97be4b7937da7b6d114"
 "checksum proc-macro2 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)" = "effdb53b25cdad54f8f48843d67398f7ef2e14f12c1b4cb4effc549a6462a4d6"
 "checksum quote 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)" = "e44651a0dc4cdd99f71c83b561e221f714912d11af1a4dff0631f923d53af035"
 "checksum unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "fc72304796d0818e357ead4e000d19c9c174ab23dc11093ac919054d20a6a7fc"
