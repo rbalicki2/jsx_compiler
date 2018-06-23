@@ -23,6 +23,6 @@ named!(
   alt!(
     match_dom_element
       | match_string
-      | match_group_to_tokens
+      | match_bracketed_group_to_tokens
   )
 );

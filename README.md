@@ -16,3 +16,14 @@ Create a `match_html_token` macro that uses `alt!` to match on a group, a DomEle
 Hook each of these up to a an always-failing function, for now.
 
 In the macros entrypoint, add logging of the input and final result.
+
+* v2
+
+Implement `match_group_to_tokens` and `match_bracketed_group_to_tokens`.
+
+Note: because these macros don't respect `#[allow(dead_code)]`, I left some
+of them commented out. But they may be useful in the future... probably not :)
+
+(Note: we want parentheses and square brackets to have no special value inside of
+an html string... but that will probably not be possible, since macros must be
+balanced.)
