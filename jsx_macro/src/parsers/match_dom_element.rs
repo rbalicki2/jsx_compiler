@@ -1,11 +1,14 @@
 use super::types::*;
-use super::fail_at_parsing::*;
 use proc_macro2::{Spacing, Delimiter};
 use super::util::{match_punct, match_ident, match_group, match_literal};
 
 type Attribute = (String, LiteralOrGroup);
 
-fn generate_dom_element_tokens(node_type: String, attributes: Vec<Attribute>) -> TokenStream {
+fn generate_dom_element_tokens(
+  node_type: String,
+  attributes: Vec<Attribute>,
+  children: Vec<TokenStream>
+) -> TokenStream {
   let attribute_assignment = match attributes.len() {
     0 => quote!{ ::std::collections::HashMap::new() },
     _ => {
@@ -29,15 +32,17 @@ fn generate_dom_element_tokens(node_type: String, attributes: Vec<Attribute>) ->
     }
   };
 
+  let children_vec = quote!{
+    vec![#(#children),*]
+  };
+
   (quote!{{
     extern crate jsx_types;
     jsx_types::HtmlToken::DomElement(
       jsx_types::DomElement {
         node_type: #node_type.into(),
         attributes: #attribute_assignment,
-        children: {
-          vec![]
-        },
+        children: #children_vec,
       }
     )
   }}).into()
@@ -65,6 +70,7 @@ named!(
   )
 );
 
+// TODO match_self_closing_tag and match_opening_tag are very similar.
 named!(
   match_self_closing_tag <TokenTreeSlice, TokenStream>,
   map!(
@@ -75,20 +81,56 @@ named!(
         many_0_custom!(match_attribute)
       ),
       tuple!(
-        // N.B. in proc_macro2, the psacing of the / character is Alone???
-        apply!(match_punct, '/', None),
+        apply!(match_punct, '/', Some(Spacing::Joint)),
         apply!(match_punct, '>', None)
       )
     ),
     |s| {
-      generate_dom_element_tokens(s.0, s.1)
+      generate_dom_element_tokens(s.0, s.1, vec![])
     }
   )
 );
 
 named!(
+  match_opening_tag <TokenTreeSlice, (String, Vec<Attribute>)>,
+  delimited!(
+    apply!(match_punct, '<', Some(Spacing::Alone)),
+    tuple!(
+      apply!(match_ident, None),
+      many_0_custom!(match_attribute)
+    ),
+    apply!(match_punct, '>', None)
+  )
+);
+
+named!(
+  match_closing_tag <TokenTreeSlice, String>,
+  delimited!(
+    tuple!(
+      apply!(match_punct, '<', Some(Spacing::Joint)),
+      apply!(match_punct, '/', None)
+    ),
+    apply!(match_ident, None),
+    apply!(match_punct, '>', None)
+  )
+);
+
+named!(
   match_tag <TokenTreeSlice, TokenStream>,
-  call!(fail_at_parsing)
+  map!(
+    tuple!(
+      match_opening_tag,
+      // N.B. actually use match_html_token here!
+      many_0_custom!(match_dom_element),
+      match_closing_tag
+    ),
+    |s| {
+      // TODO check opening tag and closing tag for the same tag name
+      let opening_tag = s.0;
+      let children = s.1;
+      generate_dom_element_tokens(opening_tag.0, opening_tag.1, children)
+    }
+  )
 );
 
 named!(

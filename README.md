@@ -53,3 +53,11 @@ unlike on u8 slices.
 
 Refactor match_group to take an Option<Delimiter>, instead of there being
 two separate functions.
+
+* v6
+
+Add `children` to `generate_dom_element_tokens`, which is matched against `match_dom_element`.
+
+TODO match against `match_html_token`.
+
+TODO check that the opening and closing tag are the same.
