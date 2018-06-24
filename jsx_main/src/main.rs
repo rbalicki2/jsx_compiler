@@ -6,6 +6,6 @@ use jsx_macro::jsx;
 
 fn main() {
   let abc = "abcd";
-  let a = jsx!(hello i'm robert "hi");
+  let a = jsx!(<div foo={abc} />);
   println!("\nfinal output = {:?}\n", a);
 }

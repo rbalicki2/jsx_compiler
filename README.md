@@ -67,3 +67,9 @@ TODO check that the opening and closing tag are the same.
 Handle strings, if in a very janky way.
 
 `match_punct` now takes an `Option<char>` target and a `Vec<char>` excluded chars.
+
+* v8
+
+DomElements match `match_html_token` instead of `match_dom_element` for children.
+
+Reorganize things a little bit to facilitate this.

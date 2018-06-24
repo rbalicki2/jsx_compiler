@@ -1,6 +1,8 @@
 use super::types::*;
 use proc_macro2::{Spacing, Delimiter};
 use super::util::{match_punct, match_ident, match_group, match_literal};
+use super::match_string::match_string;
+use super::match_group::match_bracketed_group_to_tokens;
 
 type Attribute = (String, LiteralOrGroup);
 
@@ -120,8 +122,7 @@ named!(
   map!(
     tuple!(
       match_opening_tag,
-      // N.B. actually use match_html_token here!
-      many_0_custom!(match_dom_element),
+      many_0_custom!(match_html_token),
       match_closing_tag
     ),
     |s| {
@@ -138,5 +139,14 @@ named!(
   alt!(
     match_self_closing_tag
       | match_tag
+  )
+);
+
+named!(
+  pub match_html_token <TokenTreeSlice, TokenStream>,
+  alt!(
+    match_dom_element
+      | match_string
+      | match_bracketed_group_to_tokens
   )
 );

@@ -16,11 +16,11 @@ macro_rules! many_0_custom(
           Ok((i, o))              => {
             // i is remaining
             // o is matched
-            // N.B. removed by RB, presumably this needs to be replaced.
-            // When I encounter an infinite-compile-time configuration, I'll fix this.
+
+            // N.B. I don't know if this is actually solves the infinite loops...
 
             // loop trip must always consume (otherwise infinite loops)
-            if i.len() == 0 {
+            if i.len() == 0 || i.len() == input.len() {
               vec_of_responses.push(o);
               ret = Ok((input, vec_of_responses));
               break;
