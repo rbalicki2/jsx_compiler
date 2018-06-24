@@ -1,17 +1,40 @@
 use super::types::*;
 use super::fail_at_parsing::*;
-use proc_macro::{Spacing, Delimiter};
+use proc_macro2::{Spacing, Delimiter};
 use super::util::{match_punct, match_ident, match_group, match_literal};
 
-fn generate_dom_element_tokens(node_type: String) -> TokenStream {
+type Attribute = (String, LiteralOrGroup);
+
+fn generate_dom_element_tokens(node_type: String, attributes: Vec<Attribute>) -> TokenStream {
+  let attribute_assignment = match attributes.len() {
+    0 => quote!{ ::std::collections::HashMap::new() },
+    _ => {
+      let initialization = quote!{
+        let mut attr_map = ::std::collections::HashMap::new();
+      };
+      let assignment = attributes.iter().fold(quote!{}, |accum, ref attr| {
+        let key = attr.0.clone();
+        let val = attr.1.clone();
+        quote!{
+          #accum
+          attr_map.insert(#key.into(), #val.into());
+        }
+      });
+      let returning = quote!{ attr_map };
+      quote!{{
+        #initialization
+        #assignment
+        #returning
+      }}
+    }
+  };
+
   (quote!{{
     extern crate jsx_types;
     jsx_types::HtmlToken::DomElement(
       jsx_types::DomElement {
         node_type: #node_type.into(),
-        attributes: {
-          ::std::collections::HashMap::new()
-        },
+        attributes: #attribute_assignment,
         children: {
           vec![]
         },
@@ -21,7 +44,7 @@ fn generate_dom_element_tokens(node_type: String) -> TokenStream {
 }
 
 named!(
-  match_attribute <TokenTreeSlice, (String, LiteralOrGroup)>,
+  match_attribute <TokenTreeSlice, Attribute>,
   map!(
     tuple!(
       apply!(match_ident, None),
@@ -49,15 +72,16 @@ named!(
       apply!(match_punct, '<', Some(Spacing::Alone)),
       tuple!(
         apply!(match_ident, None),
-        match_attribute
+        many_0_custom!(match_attribute)
       ),
       tuple!(
-        apply!(match_punct, '/', Some(Spacing::Joint)),
+        // N.B. in proc_macro2, the psacing of the / character is Alone???
+        apply!(match_punct, '/', None),
         apply!(match_punct, '>', None)
       )
     ),
     |s| {
-      generate_dom_element_tokens(s.0)
+      generate_dom_element_tokens(s.0, s.1)
     }
   )
 );

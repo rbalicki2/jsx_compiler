@@ -1,5 +1,5 @@
 use super::types::*;
-use proc_macro::{Spacing, Delimiter, Group, Literal};
+use proc_macro2::{Spacing, Delimiter, Group, Literal};
 use nom;
 
 pub type CharResult<'a> = JsxIResult<'a, char>;

@@ -1,5 +1,5 @@
 use super::types::*;
-use proc_macro::Delimiter;
+use proc_macro2::Delimiter;
 use super::util::match_group;
 
 named!(

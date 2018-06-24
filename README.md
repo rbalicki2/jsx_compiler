@@ -40,3 +40,16 @@ the `match_group` module should've taken the same form as these, and maybe I wil
 
 Implement `generate_dom_element_tokens` which makes a self-closing dom element!
 
+* v5
+
+Implement `match_attribute` for many attributes.
+
+Get groups working properly, i.e. with hygiene.
+
+Upgrade to proc_macro2.
+
+Add a `many_0_custom` macro, because == doesn't work on TokenStreams,
+unlike on u8 slices.
+
+Refactor match_group to take an Option<Delimiter>, instead of there being
+two separate functions.

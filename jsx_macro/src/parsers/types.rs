@@ -1,9 +1,11 @@
 use nom::IResult;
-pub use proc_macro::{TokenTree, TokenStream, Group, Literal};
+pub use proc_macro2::{TokenTree, TokenStream, Literal, Group};
+use quote::ToTokens;
 
 pub type TokenTreeSlice<'a> = &'a [TokenTree];
 pub type JsxIResult<'a, T> = IResult<TokenTreeSlice<'a>, T>;
 
+#[derive(Clone)]
 pub enum LiteralOrGroup {
   Literal(Literal),
   Group(Group),
@@ -18,5 +20,16 @@ impl From<Literal> for LiteralOrGroup {
 impl From<Group> for LiteralOrGroup {
   fn from(group: Group) -> Self {
     LiteralOrGroup::Group(group)
+  }
+}
+
+impl ToTokens for LiteralOrGroup {
+  fn to_tokens(&self, tokens: &mut TokenStream) {
+    match self {
+      LiteralOrGroup::Literal(literal) => literal.to_tokens(tokens),
+      LiteralOrGroup::Group(ref group) => {
+        group.to_tokens(tokens)
+      },
+    };
   }
 }

@@ -10,15 +10,16 @@ extern crate quote;
 
 mod parsers;
 
-use proc_macro::{TokenStream,TokenTree};
-
 #[proc_macro]
-pub fn jsx(input: TokenStream) -> TokenStream {
+pub fn jsx(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
   println!("\nInput = {:?}\n", input);
-  let vec_of_trees: Vec<TokenTree> = input.into_iter().collect();
+  let input_2: proc_macro2::TokenStream = input.into();
+  let vec_of_trees: Vec<proc_macro2::TokenTree> = input_2.into_iter().collect();
 
   let parsed = parsers::match_html_token(&vec_of_trees);
   println!("Output = {:?}\n", parsed);
+  let unwrapped = parsed.unwrap().1;
+  println!("Output2 = {}\n", unwrapped);
 
-  parsed.unwrap().1
+  unwrapped.into()
 }
