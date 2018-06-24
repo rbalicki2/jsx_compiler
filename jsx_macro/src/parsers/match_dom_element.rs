@@ -5,8 +5,9 @@ use super::util::{match_punct, match_ident, match_group, match_literal};
 
 fn generate_dom_element_tokens(node_type: String) -> TokenStream {
   (quote!{{
-    ::jsx_types::HtmlToken::DomElement(
-      ::jsx_types::DomElement {
+    extern crate jsx_types;
+    jsx_types::HtmlToken::DomElement(
+      jsx_types::DomElement {
         node_type: #node_type.into(),
         attributes: {
           ::std::collections::HashMap::new()
