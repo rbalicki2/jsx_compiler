@@ -4,8 +4,9 @@ extern crate jsx_macro;
 extern crate jsx_types;
 
 use jsx_macro::jsx;
+use jsx_types::HtmlToken;
 
 fn main() {
-  let a = jsx!(<div />);
+  let a: HtmlToken = jsx!(<div />);
   println!("\nfinal output = {:?}\n", a);
 }
