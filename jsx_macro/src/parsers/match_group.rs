@@ -1,6 +1,5 @@
 use super::types::*;
-use proc_macro::{Group, Delimiter};
-use nom;
+use proc_macro::Delimiter;
 use super::util::match_group;
 
 named!(

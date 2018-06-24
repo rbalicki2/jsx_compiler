@@ -7,6 +7,6 @@ use jsx_macro::jsx;
 use jsx_types::HtmlToken;
 
 fn main() {
-  let a: HtmlToken = jsx!(<div />);
+  let a: HtmlToken = jsx!(<div a="b" />);
   println!("\nfinal output = {:?}\n", a);
 }

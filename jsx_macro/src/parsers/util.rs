@@ -1,5 +1,5 @@
 use super::types::*;
-use proc_macro::{Spacing, Delimiter, Group};
+use proc_macro::{Spacing, Delimiter, Group, Literal};
 use nom;
 
 pub type CharResult<'a> = JsxIResult<'a, char>;
@@ -72,5 +72,15 @@ pub fn match_group(input: TokenTreeSlice, delimiter_opt: Option<Delimiter>) -> G
       }
     },
     _ => get_err(),
+  }
+}
+
+pub fn match_literal(input: TokenTreeSlice) -> JsxIResult<Literal> {
+  match input[0] {
+    TokenTree::Literal(ref literal) => Ok((
+      &input[1..],
+      literal.clone(),
+    )),
+    _ => Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42)))),
   }
 }
