@@ -53,7 +53,7 @@ named!(
   map!(
     tuple!(
       apply!(match_ident, None),
-      apply!(match_punct, Some('='), None),
+      apply!(match_punct, Some('='), None, vec![]),
       alt!(
         map!(
           apply!(match_group, Some(Delimiter::Brace)),
@@ -75,14 +75,14 @@ named!(
   match_self_closing_tag <TokenTreeSlice, TokenStream>,
   map!(
     delimited!(
-      apply!(match_punct, Some('<'), Some(Spacing::Alone)),
+      apply!(match_punct, Some('<'), Some(Spacing::Alone), vec![]),
       tuple!(
         apply!(match_ident, None),
         many_0_custom!(match_attribute)
       ),
       tuple!(
-        apply!(match_punct, Some('/'), Some(Spacing::Joint)),
-        apply!(match_punct, Some('>'), None)
+        apply!(match_punct, Some('/'), Some(Spacing::Joint), vec![]),
+        apply!(match_punct, Some('>'), None, vec![])
       )
     ),
     |s| {
@@ -94,12 +94,12 @@ named!(
 named!(
   match_opening_tag <TokenTreeSlice, (String, Vec<Attribute>)>,
   delimited!(
-    apply!(match_punct, Some('<'), Some(Spacing::Alone)),
+    apply!(match_punct, Some('<'), Some(Spacing::Alone), vec![]),
     tuple!(
       apply!(match_ident, None),
       many_0_custom!(match_attribute)
     ),
-    apply!(match_punct, Some('>'), None)
+    apply!(match_punct, Some('>'), None, vec![])
   )
 );
 
@@ -107,11 +107,11 @@ named!(
   match_closing_tag <TokenTreeSlice, String>,
   delimited!(
     tuple!(
-      apply!(match_punct, Some('<'), Some(Spacing::Joint)),
-      apply!(match_punct, Some('/'), None)
+      apply!(match_punct, Some('<'), Some(Spacing::Joint), vec![]),
+      apply!(match_punct, Some('/'), None, vec![])
     ),
     apply!(match_ident, None),
-    apply!(match_punct, Some('>'), None)
+    apply!(match_punct, Some('>'), None, vec![])
   )
 );
 

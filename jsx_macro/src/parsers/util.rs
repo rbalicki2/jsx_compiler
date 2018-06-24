@@ -4,7 +4,12 @@ use nom;
 
 pub type CharResult<'a> = JsxIResult<'a, char>;
 
-pub fn match_punct(input: TokenTreeSlice, c_opt: Option<char>, spacing_opt: Option<Spacing>) -> CharResult {
+pub fn match_punct(
+  input: TokenTreeSlice,
+  c_opt: Option<char>,
+  spacing_opt: Option<Spacing>,
+  excluded_chars: Vec<char>
+) -> CharResult {
   let get_err = || Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42))));
 
   match input[0] {
@@ -12,8 +17,9 @@ pub fn match_punct(input: TokenTreeSlice, c_opt: Option<char>, spacing_opt: Opti
 
       let wrong_char = c_opt.map(|c| punct.as_char() != c).unwrap_or(false);
       let wrong_spacing = spacing_opt.map(|spacing| punct.spacing() != spacing).unwrap_or(false);
+      let contains_excluded_char = excluded_chars.contains(&punct.as_char());
       
-      if wrong_char || wrong_spacing {
+      if wrong_char || wrong_spacing || contains_excluded_char {
         get_err()
       } else {
         Ok((&input[1..], punct.as_char()))
