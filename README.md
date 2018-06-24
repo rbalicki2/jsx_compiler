@@ -35,3 +35,8 @@ eventually return tokens which compile into a DomElement.
 
 Add utility functions `match_punct` and `match_ident`. Note: the functions in
 the `match_group` module should've taken the same form as these, and maybe I will refactor them.
+
+* v4
+
+Implement `generate_dom_element_tokens` which makes a self-closing dom element!
+
