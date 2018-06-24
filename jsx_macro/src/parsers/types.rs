@@ -5,7 +5,7 @@ use quote::ToTokens;
 pub type TokenTreeSlice<'a> = &'a [TokenTree];
 pub type JsxIResult<'a, T> = IResult<TokenTreeSlice<'a>, T>;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum LiteralOrGroup {
   Literal(Literal),
   Group(Group),

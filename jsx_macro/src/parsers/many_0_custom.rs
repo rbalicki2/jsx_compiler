@@ -5,20 +5,27 @@ macro_rules! many_0_custom(
       // use ::nom::{Err,AtEof};
       use ::nom::Err;
 
+      // ret is Ok|Err
       let ret;
-      let mut res   = ::nom::lib::std::vec::Vec::new();
+      let mut vec_of_responses = ::nom::lib::std::vec::Vec::new();
       let mut input = $i.clone();
 
       loop {
         let input_ = input.clone();
         match $submac!(input_, $($args)*) {
           Ok((i, o))              => {
+            // i is remaining
+            // o is matched
             // N.B. removed by RB, presumably this needs to be replaced.
             // When I encounter an infinite-compile-time configuration, I'll fix this.
 
             // loop trip must always consume (otherwise infinite loops)
+            if i.len() == 0 {
+              vec_of_responses.push(o);
+              ret = Ok((input, vec_of_responses));
+              break;
+            }
             // if i == input {
-
             //   if i.at_eof() {
             //     ret = Ok((input, res));
             //   } else {
@@ -26,12 +33,12 @@ macro_rules! many_0_custom(
             //   }
             //   break;
             // }
-            res.push(o);
+            vec_of_responses.push(o);
 
             input = i;
           },
           Err(Err::Error(_))      => {
-            ret = Ok((input, res));
+            ret = Ok((input, vec_of_responses));
             break;
           },
           Err(e) => {
