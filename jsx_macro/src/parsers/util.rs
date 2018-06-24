@@ -4,25 +4,19 @@ use nom;
 
 pub type CharResult<'a> = JsxIResult<'a, char>;
 
-pub fn match_punct(input: TokenTreeSlice, c: char, spacing_opt: Option<Spacing>) -> CharResult {
+pub fn match_punct(input: TokenTreeSlice, c_opt: Option<char>, spacing_opt: Option<Spacing>) -> CharResult {
   let get_err = || Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42))));
 
   match input[0] {
     TokenTree::Punct(ref punct) => {
-      let get_success = || Ok(( &input[1..], punct.as_char()));
-      if punct.as_char() == c {
-        match spacing_opt {
-          Some(spacing) => {
-            if spacing == punct.spacing() {
-              get_success()
-            } else {
-              get_err()
-            }
-          },
-          None => get_success()
-        }
-      } else {
+
+      let wrong_char = c_opt.map(|c| punct.as_char() != c).unwrap_or(false);
+      let wrong_spacing = spacing_opt.map(|spacing| punct.spacing() != spacing).unwrap_or(false);
+      
+      if wrong_char || wrong_spacing {
         get_err()
+      } else {
+        Ok((&input[1..], punct.as_char()))
       }
     },
     _ => get_err(),
@@ -36,7 +30,7 @@ pub fn match_ident(input: TokenTreeSlice, sym_opt: Option<String>) -> StringResu
 
   match input[0] {
     TokenTree::Ident(ref ident) => {
-      let get_success = || Ok(( &input[1..], format!("{}", ident)));
+      let get_success = || Ok((&input[1..], format!("{}", ident)));
       match sym_opt {
         Some(s) => {
           if s == format!("{}", ident) {
@@ -59,7 +53,7 @@ pub fn match_group(input: TokenTreeSlice, delimiter_opt: Option<Delimiter>) -> G
 
   match input[0] {
     TokenTree::Group(ref group) => {
-      let get_success = || Ok(( &input[1..], group.clone() ));
+      let get_success = || Ok((&input[1..], group.clone() ));
       match delimiter_opt {
         Some(delimiter) => {
           if group.delimiter() == delimiter {
