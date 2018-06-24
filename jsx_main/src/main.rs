@@ -5,6 +5,6 @@ extern crate jsx_macro;
 use jsx_macro::jsx;
 
 fn main() {
-  let a = jsx!({ 123 });
-  println!("{}", a);
+  let a = jsx!(<div />);
+  println!("\nfinal output = {:?}\n", a);
 }

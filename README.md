@@ -27,3 +27,11 @@ of them commented out. But they may be useful in the future... probably not :)
 (Note: we want parentheses and square brackets to have no special value inside of
 an html string... but that will probably not be possible, since macros must be
 balanced.)
+
+* v3
+
+Implement `match_self_closing_tag`, which returns tokens that become a string. It will
+eventually return tokens which compile into a DomElement.
+
+Add utility functions `match_punct` and `match_ident`. Note: the functions in
+the `match_group` module should've taken the same form as these, and maybe I will refactor them.

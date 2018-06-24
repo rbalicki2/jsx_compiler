@@ -1,17 +1,15 @@
 mod types;
 mod match_group;
 mod fail_at_parsing;
+mod match_dom_element;
+mod util;
 
 use proc_macro::TokenStream;
 
 use self::types::*;
 use self::match_group::*;
 use self::fail_at_parsing::*;
-
-named!(
-  match_dom_element <TokenTreeSlice, TokenStream>,
-  call!(fail_at_parsing)
-);
+use self::match_dom_element::*;
 
 named!(
   match_string <TokenTreeSlice, TokenStream>,
