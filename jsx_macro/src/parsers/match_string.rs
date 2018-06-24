@@ -23,7 +23,7 @@ named!(
       // and then to join on ""
 
       // Maybe we should change many_0_custom to many_1_custom above instead of this...
-      if (vec_of_strings.len() == 0) {
+      if vec_of_strings.len() == 0 {
         return quote!();
       }
 

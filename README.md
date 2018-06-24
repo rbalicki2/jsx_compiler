@@ -73,3 +73,9 @@ Handle strings, if in a very janky way.
 DomElements match `match_html_token` instead of `match_dom_element` for children.
 
 Reorganize things a little bit to facilitate this.
+
+* v9
+
+Cause the jsx! macro to panic if you attempt to parse multiple nodes.
+
+TODO: jsx_vec! macro?

@@ -16,10 +16,16 @@ pub fn jsx(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
   let input_2: proc_macro2::TokenStream = input.into();
   let vec_of_trees: Vec<proc_macro2::TokenTree> = input_2.into_iter().collect();
 
-  let parsed = parsers::match_html_token(&vec_of_trees);
+  let parsed = parsers::match_jsx(&vec_of_trees);
   println!("Output = {:?}\n", parsed);
-  let unwrapped = parsed.unwrap().1;
-  println!("Output2 = {}\n", unwrapped);
+  let unwrapped = parsed.unwrap();
+  println!("Output2 = {}\n", unwrapped.1);
+  let remaining = unwrapped.0;
+  println!("remaining = {:?}\n", remaining);
 
-  unwrapped.into()
+  if remaining.len() > 0 {
+    panic!("the jsx! macro had left over characters. Make sure you only pass one html node.");
+  }
+
+  unwrapped.1.into()
 }
