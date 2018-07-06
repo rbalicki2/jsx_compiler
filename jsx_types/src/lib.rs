@@ -1,12 +1,14 @@
 use std::collections::HashMap;
 
-#[derive(Debug)]
+// N.B. will PartialEq be derivable if we have event_handlers?
+
+#[derive(Debug, PartialEq)]
 pub enum HtmlToken {
   Text(String),
   DomElement(DomElement),
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct DomElement {
   pub node_type: String,
   pub children: Vec<HtmlToken>,
