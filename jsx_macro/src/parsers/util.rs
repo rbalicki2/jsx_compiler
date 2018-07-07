@@ -1,16 +1,18 @@
 use super::types::*;
 use proc_macro2::{Spacing, Delimiter, Group, Literal};
 use nom;
+use std::iter;
 
-pub type CharResult<'a> = JsxIResult<'a, char>;
+pub type StringResult<'a> = JsxIResult<'a, String>;
 
 pub fn match_punct(
   input: TokenTreeSlice,
   c_opt: Option<char>,
   spacing_opt: Option<Spacing>,
   excluded_chars: Vec<char>
-) -> CharResult {
+) -> StringResult {
   let get_err = || Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42))));
+  let filler_spaces = get_filler_spaces(input, true);
 
   match input.split_first() {
     Some((first, rest)) => {
@@ -24,7 +26,7 @@ pub fn match_punct(
           if wrong_char || wrong_spacing || contains_excluded_char {
             get_err()
           } else {
-            Ok((rest, punct.as_char()))
+            Ok((rest, format!("{}{}", punct.as_char(), filler_spaces)))
           }
         },
         _ => get_err(),
@@ -34,16 +36,16 @@ pub fn match_punct(
   }
 }
 
-pub type StringResult<'a> = JsxIResult<'a, String>;
 
-pub fn match_ident(input: TokenTreeSlice, sym_opt: Option<String>) -> StringResult {
+pub fn match_ident(input: TokenTreeSlice, sym_opt: Option<String>, include_filler: bool) -> StringResult {
   let get_err = || Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42))));
 
+  let filler_spaces = get_filler_spaces(input, include_filler);
   match input.split_first() {
     Some((first, rest)) => {
       match first {
         TokenTree::Ident(ref ident) => {
-          let get_success = || Ok((rest, format!("{}", ident)));
+          let get_success = || Ok((rest, format!("{}{}", ident, filler_spaces)));
           match sym_opt {
             Some(s) => {
               if s == format!("{}", ident) {
@@ -104,5 +106,32 @@ pub fn match_literal(input: TokenTreeSlice) -> JsxIResult<Literal> {
       }
     },
     None => get_err(),
+  }
+}
+
+pub fn match_literal_as_string(input: TokenTreeSlice) -> JsxIResult<String> {
+  let filler_spaces = get_filler_spaces(input, true);
+
+  match_literal(input)
+    .map(|(rest, lit)| (rest, format!("{}{}", lit.to_string(), filler_spaces)))
+}
+
+pub fn get_filler_spaces(input: TokenTreeSlice, do_it: bool) -> String {
+  // LOL but seriously, would rather have this logic here than strewn about
+  if !do_it {
+    return "".into();
+  }
+
+  let first_opt = input.get(0).map(|i| i.span().end());
+  let second_opt = input.get(1).map(|i| i.span().start());
+  match (first_opt, second_opt) {
+    (Some(first), Some(second)) => {
+      if first.line != second.line {
+        "".into()
+      } else {
+        iter::repeat(" ").take(second.column - first.column).collect::<String>()
+      }
+    },
+    _ => "".into()
   }
 }

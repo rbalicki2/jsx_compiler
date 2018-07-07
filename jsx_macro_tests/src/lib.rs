@@ -140,21 +140,17 @@ mod tests {
   fn multiple_strings_are_valid_jsx_2() {
     let dom = jsx!(foo bar "baz" 'q' ux);
     // N.B. we include the quotes, which is ... correct?
+    // TODO characters should probably not have single quotes around it.
+    // because that's how we'd include parentheses, backslash, <, etc.
     assert_eq!(dom, HtmlToken::Text("foo bar \"baz\" \'q\' ux".into()));
   }
 
   #[test]
-  fn interpolated_strings_are_valid_jsx() {
-    // Does not compile :/
-    // N.B. this is a bug, maybe, or maybe something that's not possible,
-    // because otherwise correct expressions like jsx!(<div>a {foo}</div>)
-    // would be ambiguous: should the children be HtmlToken::String(format!("a {}", foo))
-    // or should they be vec![HtmlToken::String("a".into()), foo]
-    // TODO think about this
-
-    // let bar = "bar";
-    // let dom = jsx_verbose!(foo {bar} baz);
-    // assert_eq!(dom, HtmlToken::Text("foo bar baz".into()));
+  fn random_characters_allowed_in_strings() {
+    // N.B. obviously < is not allowed
+    // Also, neither is a backslash, apparently.
+    let dom = jsx!(+ / * ^ #@&);
+    assert_eq!(dom, HtmlToken::Text("+ / * ^ #@&".into()));
   }
 
   #[test]

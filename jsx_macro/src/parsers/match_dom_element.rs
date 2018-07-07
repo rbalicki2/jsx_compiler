@@ -54,7 +54,7 @@ named!(
   match_attribute <TokenTreeSlice, Attribute>,
   map!(
     tuple!(
-      apply!(match_ident, None),
+      apply!(match_ident, None, false),
       apply!(match_punct, Some('='), None, vec![]),
       alt!(
         map!(
@@ -79,7 +79,7 @@ named!(
     delimited!(
       apply!(match_punct, Some('<'), Some(Spacing::Alone), vec![]),
       tuple!(
-        apply!(match_ident, None),
+        apply!(match_ident, None, false),
         many_0_custom!(match_attribute)
       ),
       tuple!(
@@ -98,7 +98,7 @@ named!(
   delimited!(
     apply!(match_punct, Some('<'), Some(Spacing::Alone), vec![]),
     tuple!(
-      apply!(match_ident, None),
+      apply!(match_ident, None, false),
       many_0_custom!(match_attribute)
     ),
     apply!(match_punct, Some('>'), None, vec![])
@@ -112,7 +112,7 @@ named!(
       apply!(match_punct, Some('<'), Some(Spacing::Joint), vec![]),
       apply!(match_punct, Some('/'), None, vec![])
     ),
-    apply!(match_ident, None),
+    apply!(match_ident, None, false),
     apply!(match_punct, Some('>'), None, vec![])
   )
 );
