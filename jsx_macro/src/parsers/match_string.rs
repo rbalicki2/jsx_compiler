@@ -21,12 +21,6 @@ named!(
     |vec_of_strings| {
       // N.B. need to calculate, using spans, how many extra spaces to include
       // and then to join on ""
-
-      // Maybe we should change many_0_custom to many_1_custom above instead of this...
-      if vec_of_strings.len() == 0 {
-        return quote!();
-      }
-
       let concatenated_str: String = vec_of_strings.join(" ");
       let lit = Literal::string(&concatenated_str);
       quote!{{

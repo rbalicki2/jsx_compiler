@@ -35,7 +35,7 @@ fn generate_dom_element_tokens(
   };
 
   let children_vec = quote!{
-    vec![#(#children),*]
+    vec![#(#children.into()),*]
   };
 
   (quote!{{

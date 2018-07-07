@@ -87,6 +87,38 @@ mod tests {
   }
 
   #[test]
+  fn child_component_interpolated_string_test() {
+    // N.B. we are cloning because foo is moved in the jsx! call.
+    // Is this necessary?
+    let foo: String = "foo".into();
+    let foo2 = foo.clone();
+    let dom = jsx!(<div>{foo}</div>);
+    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+      node_type: "div".into(),
+      children: vec![
+        HtmlToken::Text(foo2.into()),
+      ],
+      attributes: HashMap::new(),
+    }));
+  }
+
+  #[test]
+  fn child_component_interpolated_str_test() {
+    // N.B. we are cloning because foo is moved in the jsx! call.
+    // Is this necessary?
+    let foo: &str = "foo";
+    let foo2 = foo.clone();
+    let dom = jsx!(<div>{foo}</div>);
+    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+      node_type: "div".into(),
+      children: vec![
+        HtmlToken::Text(foo2.into()),
+      ],
+      attributes: HashMap::new(),
+    }));
+  }
+
+  #[test]
   fn non_self_closing_component() {
     let dom = jsx!(<div></div>);
     assert_eq!(dom, get_bare_div());
@@ -112,9 +144,13 @@ mod tests {
   }
 
   #[test]
-  fn interpolated_strigs_are_valid_jsx() {
+  fn interpolated_strings_are_valid_jsx() {
     // Does not compile :/
-    // N.B. this is a bug! We need to match groups and force them to evaluate to strings.
+    // N.B. this is a bug, maybe, or maybe something that's not possible,
+    // because otherwise correct expressions like jsx!(<div>a {foo}</div>)
+    // would be ambiguous: should the children be HtmlToken::String(format!("a {}", foo))
+    // or should they be vec![HtmlToken::String("a".into()), foo]
+    // TODO think about this
 
     // let bar = "bar";
     // let dom = jsx_verbose!(foo {bar} baz);
@@ -122,8 +158,13 @@ mod tests {
   }
 
   #[test]
-  fn interpolated_jsx_is_valid() {
+  fn interpolated_strings_by_themselves_are_valid_jsx() {
+    // N.B. this does not work, as the jsx! returns a String directly.
+    // TODO: fix this
 
+    // let bar = "bar";
+    // let dom = jsx!({ bar });
+    // assert_eq!(dom, HtmlToken::Text(bar.into()));
   }
 
   #[test]
