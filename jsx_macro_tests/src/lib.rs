@@ -25,6 +25,22 @@ mod tests {
   }
 
   #[test]
+  fn attribute_test() {
+    let qux = "qux";
+    let dom = jsx!(<div foo="bar" baz={qux} />);
+    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+      node_type: "div".into(),
+      children: vec![],
+      attributes: {
+        let mut map = HashMap::new();
+        map.insert("foo".into(), "bar".into());
+        map.insert("baz".into(), qux.into());
+        map
+      },
+    }));
+  }
+
+  #[test]
   fn failing_test() {
     let mut config = compiletest::Config::default();
     config.mode = "compile-fail".parse().unwrap();
