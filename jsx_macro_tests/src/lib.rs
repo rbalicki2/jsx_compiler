@@ -5,7 +5,7 @@ extern crate compiletest_rs as compiletest;
 extern crate jsx_macro;
 extern crate jsx_types;
 
-use jsx_macro::jsx;
+use jsx_macro::{jsx, jsx_verbose};
 use jsx_types::*;
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -14,14 +14,18 @@ use std::path::PathBuf;
 mod tests {
   use super::*;
 
-  #[test]
-  fn basic_test() {
-    let dom = jsx!(<div />);
-    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+  fn get_bare_div() -> HtmlToken {
+    HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![],
       attributes: HashMap::new(),
-    }));
+    })
+  }
+
+  #[test]
+  fn basic_test() {
+    let dom = jsx!(<div />);
+    assert_eq!(dom, get_bare_div());
   }
 
   #[test]
@@ -84,12 +88,14 @@ mod tests {
 
   #[test]
   fn non_self_closing_component() {
-
+    let dom = jsx!(<div></div>);
+    assert_eq!(dom, get_bare_div());
   }
 
   #[test]
   fn strings_are_valid_jsx() {
-
+    // let dom = jsx_verbose!(foo);
+    // assert_eq!(dom, HtmlToken::String("foo".into()));
   }
 
   #[test]

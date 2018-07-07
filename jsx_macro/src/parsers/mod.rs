@@ -1,5 +1,5 @@
 #[macro_use]
-mod many_0_custom;
+mod many_custom;
 mod types;
 mod match_group;
 mod match_dom_element;
