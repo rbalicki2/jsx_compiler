@@ -12,20 +12,25 @@ pub fn match_punct(
 ) -> CharResult {
   let get_err = || Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42))));
 
-  match input[0] {
-    TokenTree::Punct(ref punct) => {
+  match input.split_first() {
+    Some((first, rest)) => {
+      match first {
+        TokenTree::Punct(ref punct) => {
 
-      let wrong_char = c_opt.map(|c| punct.as_char() != c).unwrap_or(false);
-      let wrong_spacing = spacing_opt.map(|spacing| punct.spacing() != spacing).unwrap_or(false);
-      let contains_excluded_char = excluded_chars.contains(&punct.as_char());
-      
-      if wrong_char || wrong_spacing || contains_excluded_char {
-        get_err()
-      } else {
-        Ok((&input[1..], punct.as_char()))
+          let wrong_char = c_opt.map(|c| punct.as_char() != c).unwrap_or(false);
+          let wrong_spacing = spacing_opt.map(|spacing| punct.spacing() != spacing).unwrap_or(false);
+          let contains_excluded_char = excluded_chars.contains(&punct.as_char());
+          
+          if wrong_char || wrong_spacing || contains_excluded_char {
+            get_err()
+          } else {
+            Ok((rest, punct.as_char()))
+          }
+        },
+        _ => get_err(),
       }
     },
-    _ => get_err(),
+    None => get_err(),
   }
 }
 
@@ -34,21 +39,26 @@ pub type StringResult<'a> = JsxIResult<'a, String>;
 pub fn match_ident(input: TokenTreeSlice, sym_opt: Option<String>) -> StringResult {
   let get_err = || Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42))));
 
-  match input[0] {
-    TokenTree::Ident(ref ident) => {
-      let get_success = || Ok((&input[1..], format!("{}", ident)));
-      match sym_opt {
-        Some(s) => {
-          if s == format!("{}", ident) {
-            get_success()
-          } else {
-            get_err()
+  match input.split_first() {
+    Some((first, rest)) => {
+      match first {
+        TokenTree::Ident(ref ident) => {
+          let get_success = || Ok((rest, format!("{}", ident)));
+          match sym_opt {
+            Some(s) => {
+              if s == format!("{}", ident) {
+                get_success()
+              } else {
+                get_err()
+              }
+            },
+            None => get_success()
           }
         },
-        None => get_success()
+        _ => get_err(),
       }
     },
-    _ => get_err(),
+    None => get_err(),
   }
 }
 
@@ -76,11 +86,18 @@ pub fn match_group(input: TokenTreeSlice, delimiter_opt: Option<Delimiter>) -> G
 }
 
 pub fn match_literal(input: TokenTreeSlice) -> JsxIResult<Literal> {
-  match input[0] {
-    TokenTree::Literal(ref literal) => Ok((
-      &input[1..],
-      literal.clone(),
-    )),
-    _ => Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42)))),
+  let get_err = || Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42))));
+
+  match input.split_first() {
+    Some((first, rest)) => {
+      match first {
+        TokenTree::Literal(ref literal) => Ok((
+          rest,
+          literal.clone(),
+        )),
+        _ => get_err(),
+      }
+    },
+    None => get_err(),
   }
 }

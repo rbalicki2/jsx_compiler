@@ -94,7 +94,7 @@ mod tests {
 
   #[test]
   fn strings_are_valid_jsx() {
-    // let dom = jsx_verbose!(foo);
+    let dom = jsx_verbose!(foo);
     // assert_eq!(dom, HtmlToken::String("foo".into()));
   }
 
