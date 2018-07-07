@@ -5,7 +5,7 @@ use super::util::{match_punct, match_ident, match_literal};
 named!(
   pub match_string <TokenTreeSlice, TokenStream>,
   map!(
-    many_0_custom!(
+    many_1_custom!(
       alt!(
         apply!(match_ident, None)
           | map!(

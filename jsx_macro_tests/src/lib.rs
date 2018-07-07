@@ -70,15 +70,16 @@ mod tests {
 
   #[test]
   fn child_component_interpolated_test() {
-    // let inner_dom = jsx!(<span />);
-    // let dom = jsx!(<div>{ inner_dom }</div>);
-    // assert_eq!(dom, HtmlToken::DomElement(DomElement {
-    //   node_type: "div".into(),
-    //   children: vec![
-    //     inner_dom,
-    //   ],
-    //   attributes: HashMap::new(),
-    // }));
+    let inner_dom = jsx!(<span />);
+    let inner_dom_copy = jsx!(<span />);
+    let dom = jsx!(<div>{ inner_dom }</div>);
+    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+      node_type: "div".into(),
+      children: vec![
+        inner_dom_copy,
+      ],
+      attributes: HashMap::new(),
+    }));
   }
 
   #[test]
