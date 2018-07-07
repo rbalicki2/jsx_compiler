@@ -41,6 +41,62 @@ mod tests {
   }
 
   #[test]
+  fn child_component_dom_element_test() {
+    let dom = jsx!(<div><h1 /></div>);
+    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+      node_type: "div".into(),
+      children: vec![
+        HtmlToken::DomElement(DomElement {
+          node_type: "h1".into(),
+          children: vec![],
+          attributes: HashMap::new(),
+        }),
+      ],
+      attributes: HashMap::new(),
+    }));
+  }
+
+  #[test]
+  fn child_component_string_test() {
+    let dom = jsx!(<div>foo bar</div>);
+    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+      node_type: "div".into(),
+      children: vec![
+        HtmlToken::Text("foo bar".into()),
+      ],
+      attributes: HashMap::new(),
+    }));
+  }
+
+  #[test]
+  fn child_component_interpolated_test() {
+    // let inner_dom = jsx!(<span />);
+    // let dom = jsx!(<div>{ inner_dom }</div>);
+    // assert_eq!(dom, HtmlToken::DomElement(DomElement {
+    //   node_type: "div".into(),
+    //   children: vec![
+    //     inner_dom,
+    //   ],
+    //   attributes: HashMap::new(),
+    // }));
+  }
+
+  #[test]
+  fn non_self_closing_component() {
+
+  }
+
+  #[test]
+  fn strings_are_valid_jsx() {
+
+  }
+
+  #[test]
+  fn interpolated_jsx_is_valid() {
+
+  }
+
+  #[test]
   fn failing_test() {
     let mut config = compiletest::Config::default();
     config.mode = "compile-fail".parse().unwrap();
