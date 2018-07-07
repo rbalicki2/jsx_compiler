@@ -137,6 +137,26 @@ mod tests {
   }
 
   #[test]
+  fn many_spaces_are_valid_jsx() {
+    let dom = jsx!(foo  bar   baz    qux);
+    assert_eq!(dom, HtmlToken::Text("foo  bar   baz    qux".into()));
+  }
+
+  #[test]
+  fn multi_line_spaces_work_correctly() {
+    // N.B. this is weird behavior, and should be changed, but for now,
+    // let's document it.
+    let dom = jsx!(<div>foo
+      bar
+    </div>);
+    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+      node_type: "div".into(),
+      children: vec![HtmlToken::Text("foobar".into())],
+      attributes: HashMap::new(),
+    }));
+  }
+
+  #[test]
   fn multiple_strings_are_valid_jsx_2() {
     let dom = jsx!(foo bar "baz" 'q' ux);
     // N.B. we include the quotes, which is ... correct?
