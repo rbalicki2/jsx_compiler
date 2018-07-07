@@ -126,8 +126,8 @@ named!(
       match_closing_tag
     ),
     |s| {
-      // TODO check opening tag and closing tag for the same tag name
       let opening_tag = s.0;
+      assert_eq!(opening_tag.0, s.2);
       let children = s.1;
       generate_dom_element_tokens(opening_tag.0, opening_tag.1, children)
     }

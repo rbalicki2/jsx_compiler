@@ -14,15 +14,15 @@ use std::path::PathBuf;
 mod tests {
   use super::*;
 
-  // #[test]
-  // fn basic_test() {
-  //   let dom = jsx!(<div />);
-  //   assert_eq!(dom, HtmlToken::DomElement(DomElement {
-  //     node_type: "div".into(),
-  //     children: vec![],
-  //     attributes: HashMap::new(),
-  //   }));
-  // }
+  #[test]
+  fn basic_test() {
+    let dom = jsx!(<div />);
+    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+      node_type: "div".into(),
+      children: vec![],
+      attributes: HashMap::new(),
+    }));
+  }
 
   #[test]
   fn failing_test() {

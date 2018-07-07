@@ -5,5 +5,5 @@ extern crate jsx_macro;
 use jsx_macro::jsx;
 
 fn main() {
-  let _ = jsx!(<div></div>fofo); //~ ERROR proc macro panicked
+  let _ = jsx!(<div></h1>); //~ ERROR proc macro panicked
 }
