@@ -67,21 +67,26 @@ pub type GroupResult<'a> = JsxIResult<'a, Group>;
 pub fn match_group(input: TokenTreeSlice, delimiter_opt: Option<Delimiter>) -> GroupResult {
   let get_err = || Err(nom::Err::Error(error_position!(input, nom::ErrorKind::Custom(42))));
 
-  match input[0] {
-    TokenTree::Group(ref group) => {
-      let get_success = || Ok((&input[1..], group.clone() ));
-      match delimiter_opt {
-        Some(delimiter) => {
-          if group.delimiter() == delimiter {
-            get_success()
-          } else {
-            get_err()
+  match input.split_first() {
+    Some((first, rest)) => {
+      match first {
+        TokenTree::Group(ref group) => {
+          let get_success = || Ok((rest, group.clone()));
+          match delimiter_opt {
+            Some(delimiter) => {
+              if group.delimiter() == delimiter {
+                get_success()
+              } else {
+                get_err()
+              }
+            },
+            None => get_success()
           }
         },
-        None => get_success()
+        _ => get_err(),
       }
     },
-    _ => get_err(),
+    None => get_err(),
   }
 }
 
@@ -91,7 +96,7 @@ pub fn match_literal(input: TokenTreeSlice) -> JsxIResult<Literal> {
   match input.split_first() {
     Some((first, rest)) => {
       match first {
-        TokenTree::Literal(ref literal) => Ok((
+        TokenTree::Literal(literal) => Ok((
           rest,
           literal.clone(),
         )),
