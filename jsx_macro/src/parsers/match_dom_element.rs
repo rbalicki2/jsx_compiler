@@ -38,8 +38,8 @@ fn generate_dom_element_tokens(
     vec![#(#children.into()),*]
   };
 
+  // N.B. jsx_types is in scope from mod.rs
   (quote!{{
-    extern crate jsx_types;
     jsx_types::HtmlToken::DomElement(
       jsx_types::DomElement {
         node_type: #node_type.into(),

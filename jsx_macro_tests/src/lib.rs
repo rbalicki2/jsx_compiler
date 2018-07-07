@@ -159,12 +159,9 @@ mod tests {
 
   #[test]
   fn interpolated_strings_by_themselves_are_valid_jsx() {
-    // N.B. this does not work, as the jsx! returns a String directly.
-    // TODO: fix this
-
-    // let bar = "bar";
-    // let dom = jsx!({ bar });
-    // assert_eq!(dom, HtmlToken::Text(bar.into()));
+    let bar = "bar";
+    let dom = jsx!({ bar });
+    assert_eq!(dom, HtmlToken::Text(bar.into()));
   }
 
   #[test]

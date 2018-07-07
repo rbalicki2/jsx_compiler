@@ -13,5 +13,16 @@ named!(
   pub match_jsx <TokenTreeSlice, TokenStream>,
   // N.B. this complete! macro does not do what I expect it to,
   // so I manually check in the calling code.
-  complete!(match_html_token)
+  map!(
+    complete!(match_html_token),
+    |token_stream| {
+      quote!({
+        // N.B. explicitly cast the returned value as a HtmlToken
+        // because otherwise jsx!({ foo }) is valid and can be of any type.
+        extern crate jsx_types;
+        let casted: jsx_types::HtmlToken = { #token_stream.into() };
+        casted
+      })
+    }
+  )
 );
