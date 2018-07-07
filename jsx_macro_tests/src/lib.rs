@@ -94,8 +94,31 @@ mod tests {
 
   #[test]
   fn strings_are_valid_jsx() {
-    let dom = jsx_verbose!(foo);
-    // assert_eq!(dom, HtmlToken::String("foo".into()));
+    let dom = jsx!(foo);
+    assert_eq!(dom, HtmlToken::Text("foo".into()));
+  }
+
+  #[test]
+  fn multiple_strings_are_valid_jsx() {
+    let dom = jsx!(foo bar);
+    assert_eq!(dom, HtmlToken::Text("foo bar".into()));
+  }
+
+  #[test]
+  fn multiple_strings_are_valid_jsx_2() {
+    let dom = jsx!(foo bar "baz" 'q' ux);
+    // N.B. we include the quotes, which is ... correct?
+    assert_eq!(dom, HtmlToken::Text("foo bar \"baz\" \'q\' ux".into()));
+  }
+
+  #[test]
+  fn interpolated_strigs_are_valid_jsx() {
+    // Does not compile :/
+    // N.B. this is a bug! We need to match groups and force them to evaluate to strings.
+
+    // let bar = "bar";
+    // let dom = jsx_verbose!(foo {bar} baz);
+    // assert_eq!(dom, HtmlToken::Text("foo bar baz".into()));
   }
 
   #[test]
