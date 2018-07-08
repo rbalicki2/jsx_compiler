@@ -7,7 +7,8 @@ extern crate jsx_types;
 
 use jsx_macro::{jsx, jsx_verbose};
 use jsx_types::*;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+use std::collections::hash_map::Keys;
 use std::path::PathBuf;
 
 #[cfg(test)]
@@ -23,45 +24,72 @@ mod tests {
     })
   }
 
-  #[derive(PartialEq, Debug)]
+  #[derive(PartialEq, Debug, Clone)]
   enum ComparableHtmlToken {
     Text(String),
     DomElement(ComparableDomElement),
   }
 
-  #[derive(Debug, PartialEq)]
+  #[derive(Debug, PartialEq, Clone)]
   struct ComparableDomElement {
     pub node_type: String,
     pub children: Vec<ComparableHtmlToken>,
     pub attributes: jsx_types::Attributes,
   }
 
-  impl From<jsx_types::DomElement> for ComparableDomElement {
-    fn from(d: jsx_types::DomElement) -> Self {
+  impl ComparableDomElement {
+    fn from_dom_element(d: &jsx_types::DomElement) -> Self {
       ComparableDomElement {
-        node_type: d.node_type,
-        children: d.children.into_iter().map(|c| {
+        node_type: d.node_type.clone(),
+        children: d.children.iter().map(|c| {
           match c {
-            jsx_types::HtmlToken::Text(t) => ComparableHtmlToken::Text(t),
-            jsx_types::HtmlToken::DomElement(d) => ComparableHtmlToken::DomElement(d.into()),
+            jsx_types::HtmlToken::Text(t) => ComparableHtmlToken::Text(t.to_string()),
+            jsx_types::HtmlToken::DomElement(d) => ComparableHtmlToken::DomElement(
+              ComparableDomElement::from_dom_element(&d)
+            ),
           }
         }).collect(),
-        attributes: d.attributes,
+        attributes: d.attributes.clone(),
       }
     }
   }
 
+  type KeyType<'a> = Keys<'a, jsx_types::EventName, Box<jsx_types::EventHandler>>;
+  fn compare_event_handler_keys(k1: KeyType, k2: KeyType) -> bool {
+    let l1 = k1.len();
+    let s1 = k1.fold(HashSet::with_capacity(l1), |mut set, key| {
+      set.insert(key);
+      set
+    });
+    let l2 = k2.len();
+    let s2 = k2.fold(HashSet::with_capacity(l2), |mut set, key| {
+      set.insert(key);
+      set
+    });
+    s1 == s2
+  }
+
   fn equal_enough(t1: HtmlToken, t2: HtmlToken) -> bool {
-    match (t1, t2) {
+    let print_error = || println!("equal_enough returned false.\nleft={:?}\nright={:?}", t1, t2);
+    match (&t1, &t2) {
       (HtmlToken::Text(s1), HtmlToken::Text(s2)) => s1 == s2,
       (HtmlToken::DomElement(d1), HtmlToken::DomElement(d2)) => {
-        let w1: ComparableDomElement = d1.into();
-        let w2: ComparableDomElement = d2.into();
+        let event_handlers_equal = compare_event_handler_keys(d1.event_handlers.keys(), d2.event_handlers.keys());
 
-        // TODO also test if the event_handlers has the same keys
-        w1 == w2
+        if !event_handlers_equal {
+          print_error();
+          return false;
+        }
+
+        let w1: ComparableDomElement = ComparableDomElement::from_dom_element(&d1);
+        let w2: ComparableDomElement = ComparableDomElement::from_dom_element(&d2);
+
+        let result = w1 == w2;
+
+        if !result { print_error(); }
+        result
       },
-      _ => false,
+      _ => { print_error(); false },
     }
   }
 
@@ -229,6 +257,23 @@ mod tests {
     let bar = "bar";
     let dom = jsx!({ bar });
     assert!(equal_enough(dom, HtmlToken::Text(bar.into())));
+  }
+
+  #[test]
+  fn event_handlers_work() {
+    let on_click: Box<jsx_types::EventHandler> = Box::new(|_| println!("on click!"));
+    let on_click2: Box<jsx_types::EventHandler> = Box::new(|_| {});
+    let dom = jsx!(<div OnClick={on_click} />);
+    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
+      node_type: "div".into(),
+      children: vec![],
+      attributes: HashMap::new(),
+      event_handlers: {
+        let mut event_handler_map = HashMap::new();
+        event_handler_map.insert(jsx_types::EventName::OnClick, on_click2);
+        event_handler_map
+      },
+    })));
   }
 
   #[test]

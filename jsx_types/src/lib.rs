@@ -16,7 +16,8 @@ custom_derive! {
 
 pub struct Event {}
 
-pub type EventHandlers = HashMap<EventName, Box<FnOnce(Event) -> ()>>;
+pub type EventHandler = FnOnce(Event) -> ();
+pub type EventHandlers = HashMap<EventName, Box<EventHandler>>;
 
 #[derive(Debug)]
 pub enum HtmlToken {

@@ -1,4 +1,4 @@
-use proc_macro2::{Spacing, Delimiter, TokenStream};
+use proc_macro2::{Spacing, Delimiter, TokenStream, Ident, Span};
 use super::types::*;
 use super::util::{match_punct, match_ident, match_group, match_literal};
 use super::match_string::match_string;
@@ -26,9 +26,10 @@ fn generate_dom_element_tokens(
             // N.B. if val is not a group resolving to a Box<FnOnce>, this will
             // fail to type check
             let event_name_str = event_name.to_string();
+            let event_name_ident = Ident::new(&event_name_str, Span::call_site());
             event_opt = Some(quote!{
               #event_opt
-              event_map.insert(::jsx_types::EventName::#event_name_str, #val);
+              event_map.insert(::jsx_types::EventName::#event_name_ident, #val);
             });
           })
           .map_err(|_| {
