@@ -19,20 +19,63 @@ mod tests {
       node_type: "div".into(),
       children: vec![],
       attributes: HashMap::new(),
+      event_handlers: HashMap::new(),
     })
+  }
+
+  #[derive(PartialEq, Debug)]
+  enum ComparableHtmlToken {
+    Text(String),
+    DomElement(ComparableDomElement),
+  }
+
+  #[derive(Debug, PartialEq)]
+  struct ComparableDomElement {
+    pub node_type: String,
+    pub children: Vec<ComparableHtmlToken>,
+    pub attributes: jsx_types::Attributes,
+  }
+
+  impl From<jsx_types::DomElement> for ComparableDomElement {
+    fn from(d: jsx_types::DomElement) -> Self {
+      ComparableDomElement {
+        node_type: d.node_type,
+        children: d.children.into_iter().map(|c| {
+          match c {
+            jsx_types::HtmlToken::Text(t) => ComparableHtmlToken::Text(t),
+            jsx_types::HtmlToken::DomElement(d) => ComparableHtmlToken::DomElement(d.into()),
+          }
+        }).collect(),
+        attributes: d.attributes,
+      }
+    }
+  }
+
+  fn equal_enough(t1: HtmlToken, t2: HtmlToken) -> bool {
+    match (t1, t2) {
+      (HtmlToken::Text(s1), HtmlToken::Text(s2)) => s1 == s2,
+      (HtmlToken::DomElement(d1), HtmlToken::DomElement(d2)) => {
+        let w1: ComparableDomElement = d1.into();
+        let w2: ComparableDomElement = d2.into();
+
+        // TODO also test if the event_handlers has the same keys
+        w1 == w2
+      },
+      _ => false,
+    }
   }
 
   #[test]
   fn basic_test() {
     let dom = jsx!(<div />);
-    assert_eq!(dom, get_bare_div());
+    assert!(equal_enough(dom, get_bare_div()));
   }
 
   #[test]
   fn attribute_test() {
     let qux = "qux";
     let dom = jsx!(<div foo="bar" baz={qux} />);
-    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![],
       attributes: {
@@ -41,35 +84,39 @@ mod tests {
         map.insert("baz".into(), qux.into());
         map
       },
-    }));
+      event_handlers: HashMap::new(),
+    })));
   }
 
   #[test]
   fn child_component_dom_element_test() {
     let dom = jsx!(<div><h1 /></div>);
-    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         HtmlToken::DomElement(DomElement {
           node_type: "h1".into(),
           children: vec![],
           attributes: HashMap::new(),
+          event_handlers: HashMap::new(),
         }),
       ],
       attributes: HashMap::new(),
-    }));
+      event_handlers: HashMap::new(),
+    })));
   }
 
   #[test]
   fn child_component_string_test() {
     let dom = jsx!(<div>foo bar</div>);
-    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         HtmlToken::Text("foo bar".into()),
       ],
       attributes: HashMap::new(),
-    }));
+      event_handlers: HashMap::new(),
+    })));
   }
 
   #[test]
@@ -77,13 +124,14 @@ mod tests {
     let inner_dom = jsx!(<span />);
     let inner_dom_copy = jsx!(<span />);
     let dom = jsx!(<div>{ inner_dom }</div>);
-    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         inner_dom_copy,
       ],
       attributes: HashMap::new(),
-    }));
+      event_handlers: HashMap::new(),
+    })));
   }
 
   #[test]
@@ -93,13 +141,14 @@ mod tests {
     let foo: String = "foo".into();
     let foo2 = foo.clone();
     let dom = jsx!(<div>{foo}</div>);
-    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         HtmlToken::Text(foo2.into()),
       ],
       attributes: HashMap::new(),
-    }));
+      event_handlers: HashMap::new(),
+    })));
   }
 
   #[test]
@@ -109,37 +158,38 @@ mod tests {
     let foo: &str = "foo";
     let foo2 = foo.clone();
     let dom = jsx!(<div>{foo}</div>);
-    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         HtmlToken::Text(foo2.into()),
       ],
       attributes: HashMap::new(),
-    }));
+      event_handlers: HashMap::new(),
+    })));
   }
 
   #[test]
   fn non_self_closing_component() {
     let dom = jsx!(<div></div>);
-    assert_eq!(dom, get_bare_div());
+    assert!(equal_enough(dom, get_bare_div()));
   }
 
   #[test]
   fn strings_are_valid_jsx() {
     let dom = jsx!(foo);
-    assert_eq!(dom, HtmlToken::Text("foo".into()));
+    assert!(equal_enough(dom, HtmlToken::Text("foo".into())));
   }
 
   #[test]
   fn multiple_strings_are_valid_jsx() {
     let dom = jsx!(foo bar);
-    assert_eq!(dom, HtmlToken::Text("foo bar".into()));
+    assert!(equal_enough(dom, HtmlToken::Text("foo bar".into())));
   }
 
   #[test]
   fn many_spaces_are_valid_jsx() {
     let dom = jsx!(foo  bar   baz    qux);
-    assert_eq!(dom, HtmlToken::Text("foo  bar   baz    qux".into()));
+    assert!(equal_enough(dom, HtmlToken::Text("foo  bar   baz    qux".into())));
   }
 
   #[test]
@@ -149,11 +199,12 @@ mod tests {
     let dom = jsx!(<div>foo
       bar
     </div>);
-    assert_eq!(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![HtmlToken::Text("foobar".into())],
       attributes: HashMap::new(),
-    }));
+      event_handlers: HashMap::new(),
+    })));
   }
 
   #[test]
@@ -162,7 +213,7 @@ mod tests {
     // N.B. we include the quotes, which is ... correct?
     // TODO characters should probably not have single quotes around it.
     // because that's how we'd include parentheses, backslash, <, etc.
-    assert_eq!(dom, HtmlToken::Text("foo bar \"baz\" \'q\' ux".into()));
+    assert!(equal_enough(dom, HtmlToken::Text("foo bar \"baz\" \'q\' ux".into())));
   }
 
   #[test]
@@ -170,14 +221,14 @@ mod tests {
     // N.B. obviously < is not allowed
     // Also, neither is a backslash, apparently.
     let dom = jsx!(+ / * ^ #@&);
-    assert_eq!(dom, HtmlToken::Text("+ / * ^ #@&".into()));
+    assert!(equal_enough(dom, HtmlToken::Text("+ / * ^ #@&".into())));
   }
 
   #[test]
   fn interpolated_strings_by_themselves_are_valid_jsx() {
     let bar = "bar";
     let dom = jsx!({ bar });
-    assert_eq!(dom, HtmlToken::Text(bar.into()));
+    assert!(equal_enough(dom, HtmlToken::Text(bar.into())));
   }
 
   #[test]
