@@ -1,38 +1,67 @@
+use proc_macro2::{Spacing, Delimiter, TokenStream};
 use super::types::*;
-use proc_macro2::{Spacing, Delimiter};
 use super::util::{match_punct, match_ident, match_group, match_literal};
 use super::match_string::match_string;
 use super::match_group::match_bracketed_group_to_tokens;
+use jsx_types::EventName;
 
-type Attribute = (String, LiteralOrGroup);
+type AttributeOrEventHandler = (String, LiteralOrGroup);
 
 fn generate_dom_element_tokens(
   node_type: String,
-  attributes: Vec<Attribute>,
+  attributes_or_event_handlers: Vec<AttributeOrEventHandler>,
   children: Vec<TokenStream>
 ) -> TokenStream {
-  let attribute_assignment = match attributes.len() {
-    0 => quote!{ ::std::collections::HashMap::new() },
-    _ => {
-      let initialization = quote!{
-        let mut attr_map = ::std::collections::HashMap::new();
-      };
-      let assignment = attributes.iter().fold(quote!{}, |accum, ref attr| {
-        let key = attr.0.clone();
-        let val = attr.1.clone();
-        quote!{
-          #accum
-          attr_map.insert(#key.into(), #val.into());
-        }
-      });
-      let returning = quote!{ attr_map };
+  let (attribute_assignment, event_handler_assignment) = attributes_or_event_handlers
+    .into_iter()
+    .fold(
+      (None, None),
+      |(mut attr_opt, mut event_opt): (Option<TokenStream>, Option<TokenStream>), (key, val)| {
+        let event_name_opt: Result<EventName, _> = key.parse();
+
+        event_name_opt
+          .map(|event_name| {
+            // Succeeded parsing => we have an event handler
+
+            // N.B. if val is not a group resolving to a Box<FnOnce>, this will
+            // fail to type check
+            let event_name_str = event_name.to_string();
+            event_opt = Some(quote!{
+              #event_opt
+              event_map.insert(::jsx_types::EventName::#event_name_str, #val);
+            });
+          })
+          .map_err(|_| {
+            // Failed parsing => we have an attribute
+            attr_opt = Some(quote!{
+              #attr_opt
+              attr_map.insert(#key.into(), #val.into());
+            });
+          });
+
+        (attr_opt, event_opt)
+      }
+    );
+  
+  let attribute_assignment = attribute_assignment
+    .map(|token_stream| {
       quote!{{
-        #initialization
-        #assignment
-        #returning
+        let mut attr_map = ::std::collections::HashMap::new();
+        #token_stream
+        attr_map
       }}
-    }
-  };
+    })
+    .unwrap_or_else(|| quote!{ ::std::collections::HashMap::new() });
+
+  let event_handler_assignment = event_handler_assignment
+    .map(|token_stream| {
+      quote!{{
+        let mut event_map = ::std::collections::HashMap::new();
+        #token_stream
+        event_map
+      }}
+    })
+    .unwrap_or_else(|| quote!{ ::std::collections::HashMap::new() });
 
   let children_vec = quote!{
     vec![#(#children.into()),*]
@@ -45,14 +74,14 @@ fn generate_dom_element_tokens(
         node_type: #node_type.into(),
         attributes: #attribute_assignment,
         children: #children_vec,
-        event_handlers: HashMap::new(),
+        event_handlers: #event_handler_assignment,
       }
     )
   }}).into()
 }
 
 named!(
-  match_attribute <TokenTreeSlice, Attribute>,
+  match_attribute <TokenTreeSlice, AttributeOrEventHandler>,
   map!(
     tuple!(
       apply!(match_ident, None, false),
@@ -95,7 +124,7 @@ named!(
 );
 
 named!(
-  match_opening_tag <TokenTreeSlice, (String, Vec<Attribute>)>,
+  match_opening_tag <TokenTreeSlice, (String, Vec<AttributeOrEventHandler>)>,
   delimited!(
     apply!(match_punct, Some('<'), Some(Spacing::Alone), vec![]),
     tuple!(
