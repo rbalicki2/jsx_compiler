@@ -41,7 +41,7 @@ impl fmt::Debug for DomElement {
       self.node_type,
       self.children,
       self.attributes,
-      self.event_handlers.keys().map(|e| e.to_string())
+      self.event_handlers.keys().map(|e| e.to_string()).collect::<Vec<String>>()
     )
   }
 }

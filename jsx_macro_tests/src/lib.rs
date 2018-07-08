@@ -69,7 +69,7 @@ mod tests {
     s1 == s2
   }
 
-  fn equal_enough(t1: HtmlToken, t2: HtmlToken) -> bool {
+  fn equal_enough(t1: &HtmlToken, t2: &HtmlToken) -> bool {
     let print_error = || println!("equal_enough returned false.\nleft={:?}\nright={:?}", t1, t2);
     match (&t1, &t2) {
       (HtmlToken::Text(s1), HtmlToken::Text(s2)) => s1 == s2,
@@ -96,14 +96,14 @@ mod tests {
   #[test]
   fn basic_test() {
     let dom = jsx!(<div />);
-    assert!(equal_enough(dom, get_bare_div()));
+    assert!(equal_enough(&dom, &get_bare_div()));
   }
 
   #[test]
   fn attribute_test() {
     let qux = "qux";
     let dom = jsx!(<div foo="bar" baz={qux} />);
-    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![],
       attributes: {
@@ -119,7 +119,7 @@ mod tests {
   #[test]
   fn child_component_dom_element_test() {
     let dom = jsx!(<div><h1 /></div>);
-    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         HtmlToken::DomElement(DomElement {
@@ -137,7 +137,7 @@ mod tests {
   #[test]
   fn child_component_string_test() {
     let dom = jsx!(<div>foo bar</div>);
-    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         HtmlToken::Text("foo bar".into()),
@@ -152,7 +152,7 @@ mod tests {
     let inner_dom = jsx!(<span />);
     let inner_dom_copy = jsx!(<span />);
     let dom = jsx!(<div>{ inner_dom }</div>);
-    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         inner_dom_copy,
@@ -169,7 +169,7 @@ mod tests {
     let foo: String = "foo".into();
     let foo2 = foo.clone();
     let dom = jsx!(<div>{foo}</div>);
-    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         HtmlToken::Text(foo2.into()),
@@ -186,7 +186,7 @@ mod tests {
     let foo: &str = "foo";
     let foo2 = foo.clone();
     let dom = jsx!(<div>{foo}</div>);
-    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![
         HtmlToken::Text(foo2.into()),
@@ -199,25 +199,25 @@ mod tests {
   #[test]
   fn non_self_closing_component() {
     let dom = jsx!(<div></div>);
-    assert!(equal_enough(dom, get_bare_div()));
+    assert!(equal_enough(&dom, &get_bare_div()));
   }
 
   #[test]
   fn strings_are_valid_jsx() {
     let dom = jsx!(foo);
-    assert!(equal_enough(dom, HtmlToken::Text("foo".into())));
+    assert!(equal_enough(&dom, &HtmlToken::Text("foo".into())));
   }
 
   #[test]
   fn multiple_strings_are_valid_jsx() {
     let dom = jsx!(foo bar);
-    assert!(equal_enough(dom, HtmlToken::Text("foo bar".into())));
+    assert!(equal_enough(&dom, &HtmlToken::Text("foo bar".into())));
   }
 
   #[test]
   fn many_spaces_are_valid_jsx() {
     let dom = jsx!(foo  bar   baz    qux);
-    assert!(equal_enough(dom, HtmlToken::Text("foo  bar   baz    qux".into())));
+    assert!(equal_enough(&dom, &HtmlToken::Text("foo  bar   baz    qux".into())));
   }
 
   #[test]
@@ -227,7 +227,7 @@ mod tests {
     let dom = jsx!(<div>foo
       bar
     </div>);
-    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![HtmlToken::Text("foobar".into())],
       attributes: HashMap::new(),
@@ -241,7 +241,7 @@ mod tests {
     // N.B. we include the quotes, which is ... correct?
     // TODO characters should probably not have single quotes around it.
     // because that's how we'd include parentheses, backslash, <, etc.
-    assert!(equal_enough(dom, HtmlToken::Text("foo bar \"baz\" \'q\' ux".into())));
+    assert!(equal_enough(&dom, &HtmlToken::Text("foo bar \"baz\" \'q\' ux".into())));
   }
 
   #[test]
@@ -249,14 +249,14 @@ mod tests {
     // N.B. obviously < is not allowed
     // Also, neither is a backslash, apparently.
     let dom = jsx!(+ / * ^ #@&);
-    assert!(equal_enough(dom, HtmlToken::Text("+ / * ^ #@&".into())));
+    assert!(equal_enough(&dom, &HtmlToken::Text("+ / * ^ #@&".into())));
   }
 
   #[test]
   fn interpolated_strings_by_themselves_are_valid_jsx() {
     let bar = "bar";
     let dom = jsx!({ bar });
-    assert!(equal_enough(dom, HtmlToken::Text(bar.into())));
+    assert!(equal_enough(&dom, &HtmlToken::Text(bar.into())));
   }
 
   #[test]
@@ -264,7 +264,7 @@ mod tests {
     let on_click: Box<jsx_types::EventHandler> = Box::new(|_| println!("on click!"));
     let on_click2: Box<jsx_types::EventHandler> = Box::new(|_| {});
     let dom = jsx!(<div OnClick={on_click} />);
-    assert!(equal_enough(dom, HtmlToken::DomElement(DomElement {
+    assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![],
       attributes: HashMap::new(),
