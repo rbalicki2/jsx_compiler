@@ -24,6 +24,10 @@ mod tests {
     })
   }
 
+  fn get_event_handler() -> Box<jsx_types::EventHandler> {
+    Box::new(|_| {})
+  }
+
   #[derive(PartialEq, Debug, Clone)]
   enum ComparableHtmlToken {
     Text(String),
@@ -74,6 +78,8 @@ mod tests {
     match (&t1, &t2) {
       (HtmlToken::Text(s1), HtmlToken::Text(s2)) => s1 == s2,
       (HtmlToken::DomElement(d1), HtmlToken::DomElement(d2)) => {
+        // N.B. this doesn't check children's event handlers...
+
         let event_handlers_equal = compare_event_handler_keys(d1.event_handlers.keys(), d2.event_handlers.keys());
 
         if !event_handlers_equal {
@@ -261,8 +267,8 @@ mod tests {
 
   #[test]
   fn event_handlers_work() {
-    let on_click: Box<jsx_types::EventHandler> = Box::new(|_| println!("on click!"));
-    let on_click2: Box<jsx_types::EventHandler> = Box::new(|_| {});
+    let on_click = get_event_handler();
+    let on_click2 = get_event_handler();
     let dom = jsx!(<div OnClick={on_click} />);
     assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
@@ -274,6 +280,45 @@ mod tests {
         event_handler_map
       },
     })));
+  }
+
+  #[test]
+  fn event_handlers_are_more_complicated() {
+    let on_click = get_event_handler();
+    let on_click2 = get_event_handler();
+    let on_mouse_over = get_event_handler();
+    let on_mouse_over2 = get_event_handler();
+    let on_mouse_out = get_event_handler();
+    let on_mouse_out2 = get_event_handler();
+    let dom = jsx!(<div OnClick={on_click} OnMouseOver={on_mouse_over}>
+      <h1 OnMouseOut={on_mouse_out} />
+    </div>);
+
+    assert!(equal_enough(
+      &dom,
+      &HtmlToken::DomElement(DomElement {
+        node_type: "div".into(),
+        children: vec![
+          HtmlToken::DomElement(DomElement {
+            node_type: "h1".into(),
+            children: vec![],
+            attributes: HashMap::new(),
+            event_handlers: {
+              let mut event_handlers_map = HashMap::new();
+              event_handlers_map.insert(jsx_types::EventName::OnMouseOut, on_mouse_out2);
+              event_handlers_map
+            },
+          })
+        ],
+        attributes: HashMap::new(),
+        event_handlers: {
+          let mut event_handlers_map = HashMap::new();
+          event_handlers_map.insert(jsx_types::EventName::OnClick, on_click2);
+          event_handlers_map.insert(jsx_types::EventName::OnMouseOver, on_mouse_over2);
+          event_handlers_map
+        },
+      })
+    ))
   }
 
   #[test]
