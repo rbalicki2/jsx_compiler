@@ -19,7 +19,7 @@ fn generate_dom_element_tokens(
       |(mut attr_opt, mut event_opt): (Option<TokenStream>, Option<TokenStream>), (key, val)| {
         let event_name_opt: Result<EventName, _> = key.parse();
 
-        event_name_opt
+        let _ = event_name_opt
           .map(|event_name| {
             // Succeeded parsing => we have an event handler
 
