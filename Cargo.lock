@@ -83,14 +83,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "jsx_main"
-version = "0.1.0"
-dependencies = [
- "jsx_macro 0.1.0",
- "jsx_types 0.1.0",
-]
-
-[[package]]
 name = "jsx_types"
 version = "0.1.0"
 dependencies = [

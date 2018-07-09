@@ -2,80 +2,53 @@
 
 > A procedural macro for compiling jsx into a `DomElement` type
 
-Follow along with the [presentation](https://docs.google.com/presentation/d/11KK06J-p-Q2XLg1VW7GK02rSCn3z-pvfKf59WMxNirA/edit?usp=sharing)
+## Example
 
-## tags
+```rs
+#![feature(proc_macro, proc_macro_non_items)]
 
-* v0
+extern crate jsx_types;
+extern crate jsx_macro;
 
-Bare-bones procedural macro that does nothing to the input, and the basic types we will be using.
+let on_click: Box<jsx_types::EventHandler> = Box::new(|_| println!("foo!"));
+let subtitle = "This is a subtitle";
+let dom = jsx!(<div foo="bar">
+  <h1 OnClick={on_click}>This title is clickable</h1>
+  <div class="subtitle">{ subtitle }</div>
+</div>);
+```
 
-* v1
+## Crate Organization
 
-Create a `match_html_token` macro that uses `alt!` to match on a group, a DomElement or a string.
-Hook each of these up to a an always-failing function, for now.
+### jsx_macro
 
-In the macros entrypoint, add logging of the input and final result.
+* This is the main crate, which exports the jsx! and jsx_verbose! macros.
 
-* v2
+### jsx_types
 
-Implement `match_group_to_tokens` and `match_bracketed_group_to_tokens`.
+* This macro exports all of the used types: `HtmlToken`, `DomElement`, `EventName`, `Event`, `EventHandler`, `Attributes` and `EventHandlers`.
 
-Note: because these macros don't respect `#[allow(dead_code)]`, I left some
-of them commented out. But they may be useful in the future... probably not :)
+### jsx_macro_tests
 
-(Note: we want parentheses and square brackets to have no special value inside of
-an html string... but that will probably not be possible, since macros must be
-balanced.)
+* Tests the `jsx_macro` crate.
 
-* v3
+## TODO
 
-Implement `match_self_closing_tag`, which returns tokens that become a string. It will
-eventually return tokens which compile into a DomElement.
+* Add RustDoc docs
+* `DomElement.event_handlers` is not done correctly. For example, an `OnClick` handlers and an `OnMouseOver` handlers should receive different events. Thus, `DomElement` should have separate, optional fields, e.g.:
 
-Add utility functions `match_punct` and `match_ident`. Note: the functions in
-the `match_group` module should've taken the same form as these, and maybe I will refactor them.
+```
+pub type DomElement {
+  // ... other fields
+  on_click: Option<Box<FnOnce(ClickEvent) -> ()>>,
+  on_mouse_over: Option<Box<FnOnce(MouseEvent) -> ()>>,
+}
+```
 
-* v4
+* There should be also be a builder-pattern constructor for `DomElement`. 
+* Integrate with a wasm full-stack app.
+* Other methods: `to_inner_html` and the like.
 
-Implement `generate_dom_element_tokens` which makes a self-closing dom element!
+## Presentation
 
-* v5
-
-Implement `match_attribute` for many attributes.
-
-Get groups working properly, i.e. with hygiene.
-
-Upgrade to proc_macro2.
-
-Add a `many_0_custom` macro, because == doesn't work on TokenStreams,
-unlike on u8 slices.
-
-Refactor match_group to take an Option<Delimiter>, instead of there being
-two separate functions.
-
-* v6
-
-Add `children` to `generate_dom_element_tokens`, which is matched against `match_dom_element`.
-
-TODO match against `match_html_token`.
-
-TODO check that the opening and closing tag are the same.
-
-* v7
-
-Handle strings, if in a very janky way.
-
-`match_punct` now takes an `Option<char>` target and a `Vec<char>` excluded chars.
-
-* v8
-
-DomElements match `match_html_token` instead of `match_dom_element` for children.
-
-Reorganize things a little bit to facilitate this.
-
-* v9
-
-Cause the jsx! macro to panic if you attempt to parse multiple nodes.
-
-TODO: jsx_vec! macro?
+Follow along with the [presentation](https://docs.google.com/presentation/d/11KK06J-p-Q2XLg1VW7GK02rSCn3z-pvfKf59WMxNirA/edit?usp=sharing) and with the [video](https://youtu.be/sorD8vpKHHU). The code that is current at the time of the presentation was tag v7, but you should have no trouble following along with master (as of July 8th).

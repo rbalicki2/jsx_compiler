@@ -5,7 +5,10 @@ extern crate compiletest_rs as compiletest;
 extern crate jsx_macro;
 extern crate jsx_types;
 
+#[allow(unused_imports)]
 use jsx_macro::{jsx, jsx_verbose};
+
+// N.B. there are random lint warnings about these imports, but they are used...
 use jsx_types::*;
 use std::collections::{HashMap, HashSet};
 use std::collections::hash_map::Keys;

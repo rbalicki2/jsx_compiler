@@ -3,6 +3,5 @@
 members = [
   "jsx_macro",
   "jsx_types",
-  "jsx_main",
   "jsx_macro_tests",
 ]
