@@ -48,6 +48,7 @@ pub type DomElement {
 * There should be also be a builder-pattern constructor for `DomElement`. 
 * Integrate with a wasm full-stack app.
 * Other methods: `to_inner_html` and the like.
+* Spacing on multiline idents and such
 
 ## Presentation
 
