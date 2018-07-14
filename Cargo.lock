@@ -69,8 +69,8 @@ version = "0.1.0"
 dependencies = [
  "jsx_types 0.1.0",
  "nom 4.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "proc-macro2 0.4.6 (registry+https://github.com/rust-lang/crates.io-index)",
- "quote 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2 0.4.4",
+ "quote 0.6.3",
 ]
 
 [[package]]
@@ -130,10 +130,24 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
+version = "0.4.4"
+dependencies = [
+ "unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "proc-macro2"
 version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "unicode-xid 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "quote"
+version = "0.6.3"
+dependencies = [
+ "proc-macro2 0.4.4",
 ]
 
 [[package]]

@@ -5,3 +5,7 @@ members = [
   "jsx_types",
   "jsx_macro_tests",
 ]
+
+
+[patch.crates-io]
+proc-macro2 = { path = "../proc-macro2", features = ["nightly"] }

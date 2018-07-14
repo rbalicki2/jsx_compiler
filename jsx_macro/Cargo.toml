@@ -5,8 +5,8 @@ authors = ["Robert <robert.balicki@gmail.com>"]
 
 [dependencies]
 jsx_types = { path = "../jsx_types" }
-proc-macro2 = { version = "0.4", features = ["nightly"] }
-quote = "0.6.3"
+proc-macro2 = { path = "../../proc-macro2", features = ["nightly"] }
+quote = { path = "../../quote" }
 nom = "4.0.0"
 
 [lib]
