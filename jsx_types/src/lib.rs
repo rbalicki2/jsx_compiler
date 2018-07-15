@@ -202,15 +202,9 @@ impl fmt::Debug for DomElement {
 
 pub type Attributes = HashMap<String, String>;
 
-impl From<String> for HtmlToken {
-  fn from(s: String) -> Self {
-    HtmlToken::Text(s)
-  }
-}
-
-impl<'a> From<&'a str> for HtmlToken {
-  fn from(s: &'a str) -> Self {
-    HtmlToken::Text(s.into())
+impl<T> From<T> for HtmlToken where T: ToString {
+  fn from(t: T) -> Self {
+    HtmlToken::Text(t.to_string())
   }
 }
 
