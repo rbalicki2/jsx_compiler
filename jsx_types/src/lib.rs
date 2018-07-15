@@ -8,7 +8,7 @@ extern crate custom_derive;
 use std::collections::HashMap;
 use std::convert::From;
 use std::fmt;
-use std::boxed::FnBox;
+// use std::boxed::FnBox;
 
 custom_derive! {
   // N.B. uncomment these as they are tested and determined to work
@@ -133,20 +133,20 @@ custom_derive! {
 
 pub struct Event {}
 
-pub type EventHandler = FnBox(Event) -> ();
-pub type EventHandlers = HashMap<EventName, Box<EventHandler>>;
+pub type EventHandler<'a> = 'a + FnMut(Event) -> ();
+pub type EventHandlers<'a> = HashMap<EventName, Box<EventHandler<'a>>>;
 
 #[derive(Debug)]
-pub enum HtmlToken {
+pub enum HtmlToken<'a> {
   Text(String),
-  DomElement(DomElement),
+  DomElement(DomElement<'a>),
 }
 
 pub trait AsInnerHtml {
   fn as_inner_html(&self) -> String; 
 }
 
-impl AsInnerHtml for HtmlToken {
+impl<'a> AsInnerHtml for HtmlToken<'a> {
   fn as_inner_html(&self) -> String {
     match &self {
       HtmlToken::Text(s) => s.to_string(),
@@ -155,14 +155,14 @@ impl AsInnerHtml for HtmlToken {
   }
 }
 
-pub struct DomElement {
+pub struct DomElement<'a> {
   pub node_type: String,
-  pub children: Vec<HtmlToken>,
+  pub children: Vec<HtmlToken<'a>>,
   pub attributes: Attributes,
-  pub event_handlers: EventHandlers,
+  pub event_handlers: EventHandlers<'a>,
 }
 
-impl AsInnerHtml for DomElement {
+impl<'a> AsInnerHtml for DomElement<'a> {
   fn as_inner_html(&self) -> String {
     let attr_str: String = self.attributes
       .iter()
@@ -187,7 +187,7 @@ impl AsInnerHtml for DomElement {
   }
 }
 
-impl fmt::Debug for DomElement {
+impl<'a> fmt::Debug for DomElement<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(
       f,
@@ -202,12 +202,12 @@ impl fmt::Debug for DomElement {
 
 pub type Attributes = HashMap<String, String>;
 
-impl<T> From<T> for HtmlToken where T: ToString {
+impl<'a, T> From<T> for HtmlToken<'a> where T: ToString {
   fn from(t: T) -> Self {
     HtmlToken::Text(t.to_string())
   }
 }
 
-pub trait Component {
-  fn render(&mut self) -> HtmlToken;
+pub trait Component<'a> {
+  fn render(&'a mut self) -> HtmlToken<'a>;
 }
