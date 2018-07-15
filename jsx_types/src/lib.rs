@@ -139,12 +139,49 @@ pub enum HtmlToken {
   DomElement(DomElement),
 }
 
+pub trait AsInnerHtml {
+  fn as_inner_html(&self) -> String; 
+}
+
+impl AsInnerHtml for HtmlToken {
+  fn as_inner_html(&self) -> String {
+    match &self {
+      HtmlToken::Text(s) => s.to_string(),
+      HtmlToken::DomElement(d) => d.as_inner_html(),
+    }
+  }
+}
+
 pub struct DomElement {
   pub node_type: String,
   pub children: Vec<HtmlToken>,
   pub attributes: Attributes,
-  // TODO add this if there is time
   pub event_handlers: EventHandlers,
+}
+
+impl AsInnerHtml for DomElement {
+  fn as_inner_html(&self) -> String {
+    let attr_str: String = self.attributes
+      .iter()
+      .map(|(key, val)| format!("{}=\"{}\"", key, val))
+      .collect::<Vec<String>>()
+      .join(" ");
+
+    match self.children.len() {
+      0 => {
+        format!("<{} {} />", self.node_type, attr_str)
+      },
+      _ => {
+        format!(
+          "<{} {}>{}</{}>",
+          self.node_type,
+          attr_str,
+          self.children.iter().map(|c| c.as_inner_html()).collect::<Vec<String>>().join(""),
+          self.node_type
+        )
+      }
+    }
+  }
 }
 
 impl fmt::Debug for DomElement {
@@ -172,4 +209,8 @@ impl<'a> From<&'a str> for HtmlToken {
   fn from(s: &'a str) -> Self {
     HtmlToken::Text(s.into())
   }
+}
+
+pub trait Component {
+  fn render(&self) -> HtmlToken;
 }
