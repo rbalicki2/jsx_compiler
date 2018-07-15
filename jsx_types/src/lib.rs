@@ -1,3 +1,5 @@
+#![feature(fnbox)]
+
 #[macro_use]
 extern crate enum_derive;
 #[macro_use]
@@ -6,6 +8,7 @@ extern crate custom_derive;
 use std::collections::HashMap;
 use std::convert::From;
 use std::fmt;
+use std::boxed::FnBox;
 
 custom_derive! {
   // N.B. uncomment these as they are tested and determined to work
@@ -130,7 +133,7 @@ custom_derive! {
 
 pub struct Event {}
 
-pub type EventHandler = FnOnce(Event) -> ();
+pub type EventHandler = FnBox(Event) -> ();
 pub type EventHandlers = HashMap<EventName, Box<EventHandler>>;
 
 #[derive(Debug)]
@@ -212,5 +215,5 @@ impl<'a> From<&'a str> for HtmlToken {
 }
 
 pub trait Component {
-  fn render(&self) -> HtmlToken;
+  fn render(&mut self) -> HtmlToken;
 }
