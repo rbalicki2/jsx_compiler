@@ -6,3 +6,4 @@ authors = ["Robert <robert.balicki@gmail.com>"]
 [dependencies]
 enum_derive = "0.1.7"
 custom_derive = "0.1.7"
+wasm-bindgen = "0.2"
