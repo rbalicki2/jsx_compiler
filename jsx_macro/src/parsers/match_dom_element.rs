@@ -1,4 +1,4 @@
-use proc_macro2::{Spacing, Delimiter, TokenStream, Ident, Span};
+use proc_macro2::{Spacing, Delimiter, TokenStream};
 use super::types::*;
 use super::util::{match_punct, match_ident, match_group, match_literal};
 use super::match_string::match_string;
