@@ -9,7 +9,7 @@ extern crate jsx_types;
 use jsx_macro::{jsx, jsx_verbose};
 
 // N.B. there are random lint warnings about these imports, but they are used...
-use jsx_types::*;
+use jsx_types::{*, events::*};
 use std::collections::{HashMap, HashSet};
 use std::collections::hash_map::Keys;
 use std::path::PathBuf;
@@ -24,10 +24,11 @@ mod tests {
       children: vec![],
       attributes: HashMap::new(),
       event_handlers: HashMap::new(),
+      event_handlers_2: EventHandlers2::new(),
     })
   }
 
-  fn get_event_handler() -> Box<jsx_types::EventHandler> {
+  fn get_event_handler<'a>() -> Box<jsx_types::EventHandler<'a>> {
     Box::new(|_| {})
   }
 
@@ -61,7 +62,7 @@ mod tests {
     }
   }
 
-  type KeyType<'a> = Keys<'a, jsx_types::EventName, Box<jsx_types::EventHandler>>;
+  type KeyType<'a> = Keys<'a, jsx_types::EventName, Box<jsx_types::EventHandler<'a>>>;
   fn compare_event_handler_keys(k1: KeyType, k2: KeyType) -> bool {
     let l1 = k1.len();
     let s1 = k1.fold(HashSet::with_capacity(l1), |mut set, key| {
@@ -122,6 +123,7 @@ mod tests {
         map
       },
       event_handlers: HashMap::new(),
+      event_handlers_2: EventHandlers2::new(),
     })));
   }
 
@@ -136,10 +138,12 @@ mod tests {
           children: vec![],
           attributes: HashMap::new(),
           event_handlers: HashMap::new(),
+          event_handlers_2: EventHandlers2::new(),
         }),
       ],
       attributes: HashMap::new(),
       event_handlers: HashMap::new(),
+      event_handlers_2: EventHandlers2::new(),
     })));
   }
 
@@ -153,6 +157,7 @@ mod tests {
       ],
       attributes: HashMap::new(),
       event_handlers: HashMap::new(),
+      event_handlers_2: EventHandlers2::new(),
     })));
   }
 
@@ -168,6 +173,7 @@ mod tests {
       ],
       attributes: HashMap::new(),
       event_handlers: HashMap::new(),
+      event_handlers_2: EventHandlers2::new(),
     })));
   }
 
@@ -185,6 +191,7 @@ mod tests {
       ],
       attributes: HashMap::new(),
       event_handlers: HashMap::new(),
+      event_handlers_2: EventHandlers2::new(),
     })));
   }
 
@@ -202,6 +209,7 @@ mod tests {
       ],
       attributes: HashMap::new(),
       event_handlers: HashMap::new(),
+      event_handlers_2: EventHandlers2::new(),
     })));
   }
 
@@ -241,6 +249,7 @@ mod tests {
       children: vec![HtmlToken::Text("foobar".into())],
       attributes: HashMap::new(),
       event_handlers: HashMap::new(),
+      event_handlers_2: EventHandlers2::new(),
     })));
   }
 
@@ -282,6 +291,7 @@ mod tests {
         event_handler_map.insert(jsx_types::EventName::OnClick, on_click2);
         event_handler_map
       },
+      event_handlers_2: EventHandlers2::new(),
     })));
   }
 
@@ -311,6 +321,7 @@ mod tests {
               event_handlers_map.insert(jsx_types::EventName::OnMouseOut, on_mouse_out2);
               event_handlers_map
             },
+            event_handlers_2: EventHandlers2::new(),
           })
         ],
         attributes: HashMap::new(),
@@ -320,6 +331,7 @@ mod tests {
           event_handlers_map.insert(jsx_types::EventName::OnMouseOver, on_mouse_over2);
           event_handlers_map
         },
+        event_handlers_2: EventHandlers2::new(),
       })
     ))
   }

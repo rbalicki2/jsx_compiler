@@ -13,6 +13,8 @@ use std::fmt;
 // use std::boxed::FnBox;
 pub mod events;
 
+use events::*;
+
 custom_derive! {
   // N.B. uncomment these as they are tested and determined to work
   // N.B. it is *obvious* that this is a bad implementation, since
@@ -163,6 +165,7 @@ pub struct DomElement<'a> {
   pub children: Vec<HtmlToken<'a>>,
   pub attributes: Attributes,
   pub event_handlers: EventHandlers<'a>,
+  pub event_handlers_2: EventHandlers2<'a>,
 }
 
 impl<'a> AsInnerHtml for DomElement<'a> {

@@ -76,6 +76,7 @@ fn generate_dom_element_tokens(
         attributes: #attribute_assignment,
         children: #children_vec,
         event_handlers: #event_handler_assignment,
+        event_handlers_2: jsx_types::events::EventHandlers2::new(),
       }
     )
   }}).into()
