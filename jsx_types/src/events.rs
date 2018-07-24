@@ -121,13 +121,13 @@ pub struct OnClickEvent {
 
 pub type OnClickEventHandler<'a> = 'a + FnMut(OnClickEvent) -> ();
 
-pub struct EventHandlers2<'a> {
+pub struct EventHandlers<'a> {
   on_click: Option<Box<OnClickEventHandler<'a>>>,
 }
 
-impl<'a> EventHandlers2<'a> {
-  pub fn new() -> EventHandlers2<'a> {
-    EventHandlers2 {
+impl<'a> EventHandlers<'a> {
+  pub fn new() -> EventHandlers<'a> {
+    EventHandlers {
       on_click: None,
     }
   }

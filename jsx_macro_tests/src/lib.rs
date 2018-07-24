@@ -23,7 +23,7 @@ mod tests {
       node_type: "div".into(),
       children: vec![],
       attributes: HashMap::new(),
-      event_handlers_2: EventHandlers2::new(),
+      event_handlers: EventHandlers::new(),
     })
   }
 
@@ -118,7 +118,7 @@ mod tests {
         map.insert("baz".into(), qux.into());
         map
       },
-      event_handlers_2: EventHandlers2::new(),
+      event_handlers: EventHandlers::new(),
     })));
   }
 
@@ -132,11 +132,11 @@ mod tests {
           node_type: "h1".into(),
           children: vec![],
           attributes: HashMap::new(),
-          event_handlers_2: EventHandlers2::new(),
+          event_handlers: EventHandlers::new(),
         }),
       ],
       attributes: HashMap::new(),
-      event_handlers_2: EventHandlers2::new(),
+      event_handlers: EventHandlers::new(),
     })));
   }
 
@@ -149,7 +149,7 @@ mod tests {
         HtmlToken::Text("foo bar".into()),
       ],
       attributes: HashMap::new(),
-      event_handlers_2: EventHandlers2::new(),
+      event_handlers: EventHandlers::new(),
     })));
   }
 
@@ -164,7 +164,7 @@ mod tests {
         inner_dom_copy,
       ],
       attributes: HashMap::new(),
-      event_handlers_2: EventHandlers2::new(),
+      event_handlers: EventHandlers::new(),
     })));
   }
 
@@ -181,7 +181,7 @@ mod tests {
         HtmlToken::Text(foo2.into()),
       ],
       attributes: HashMap::new(),
-      event_handlers_2: EventHandlers2::new(),
+      event_handlers: EventHandlers::new(),
     })));
   }
 
@@ -198,7 +198,7 @@ mod tests {
         HtmlToken::Text(foo2.into()),
       ],
       attributes: HashMap::new(),
-      event_handlers_2: EventHandlers2::new(),
+      event_handlers: EventHandlers::new(),
     })));
   }
 
@@ -237,7 +237,7 @@ mod tests {
       node_type: "div".into(),
       children: vec![HtmlToken::Text("foobar".into())],
       attributes: HashMap::new(),
-      event_handlers_2: EventHandlers2::new(),
+      event_handlers: EventHandlers::new(),
     })));
   }
 
@@ -274,7 +274,7 @@ mod tests {
   //     node_type: "div".into(),
   //     children: vec![],
   //     attributes: HashMap::new(),
-  //     event_handlers_2: EventHandlers2::new(),
+  //     event_handlers: EventHandlers::new(),
   //   })));
   // }
 
@@ -299,11 +299,11 @@ mod tests {
   //           node_type: "h1".into(),
   //           children: vec![],
   //           attributes: HashMap::new(),
-  //           event_handlers_2: EventHandlers2::new(),
+  //           event_handlers: EventHandlers::new(),
   //         })
   //       ],
   //       attributes: HashMap::new(),
-  //       event_handlers_2: EventHandlers2::new(),
+  //       event_handlers: EventHandlers::new(),
   //     })
   //   ))
   // }

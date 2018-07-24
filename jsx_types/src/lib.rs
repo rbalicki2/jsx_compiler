@@ -38,7 +38,7 @@ pub struct DomElement<'a> {
   pub node_type: String,
   pub children: Vec<HtmlToken<'a>>,
   pub attributes: Attributes,
-  pub event_handlers_2: EventHandlers2<'a>,
+  pub event_handlers: EventHandlers<'a>,
 }
 
 impl<'a> AsInnerHtml for DomElement<'a> {
