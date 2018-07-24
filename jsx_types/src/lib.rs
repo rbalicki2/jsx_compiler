@@ -15,11 +15,6 @@ pub mod events;
 
 use events::*;
 
-pub struct Event {}
-
-pub type EventHandler<'a> = 'a + FnMut(Event) -> ();
-pub type EventHandlers<'a> = HashMap<EventName, Box<EventHandler<'a>>>;
-
 #[derive(Debug)]
 pub enum HtmlToken<'a> {
   Text(String),
@@ -43,7 +38,6 @@ pub struct DomElement<'a> {
   pub node_type: String,
   pub children: Vec<HtmlToken<'a>>,
   pub attributes: Attributes,
-  pub event_handlers: EventHandlers<'a>,
   pub event_handlers_2: EventHandlers2<'a>,
 }
 
@@ -76,11 +70,11 @@ impl<'a> fmt::Debug for DomElement<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(
       f,
-      "DomElement {{ node_type: {}, children: {:?}, attributes: {:?}, event_handlers with keys: {:?} }}",
+      "DomElement {{ node_type: {}, children: {:?}, attributes: {:?}, event_handlers with keys: <not impl> }}",
       self.node_type,
       self.children,
       self.attributes,
-      self.event_handlers.keys().map(|e| e.to_string()).collect::<Vec<String>>()
+      // self.event_handlers.keys().map(|e| e.to_string()).collect::<Vec<String>>()
     )
   }
 }

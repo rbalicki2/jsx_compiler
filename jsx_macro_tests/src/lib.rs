@@ -23,13 +23,8 @@ mod tests {
       node_type: "div".into(),
       children: vec![],
       attributes: HashMap::new(),
-      event_handlers: HashMap::new(),
       event_handlers_2: EventHandlers2::new(),
     })
-  }
-
-  fn get_event_handler<'a>() -> Box<jsx_types::EventHandler<'a>> {
-    Box::new(|_| {})
   }
 
   #[derive(PartialEq, Debug, Clone)]
@@ -62,20 +57,20 @@ mod tests {
     }
   }
 
-  type KeyType<'a> = Keys<'a, jsx_types::EventName, Box<jsx_types::EventHandler<'a>>>;
-  fn compare_event_handler_keys(k1: KeyType, k2: KeyType) -> bool {
-    let l1 = k1.len();
-    let s1 = k1.fold(HashSet::with_capacity(l1), |mut set, key| {
-      set.insert(key);
-      set
-    });
-    let l2 = k2.len();
-    let s2 = k2.fold(HashSet::with_capacity(l2), |mut set, key| {
-      set.insert(key);
-      set
-    });
-    s1 == s2
-  }
+  // type KeyType<'a> = Keys<'a, jsx_types::events::EventName, Box<jsx_types::EventHandler<'a>>>;
+  // fn compare_event_handler_keys(k1: KeyType, k2: KeyType) -> bool {
+  //   let l1 = k1.len();
+  //   let s1 = k1.fold(HashSet::with_capacity(l1), |mut set, key| {
+  //     set.insert(key);
+  //     set
+  //   });
+  //   let l2 = k2.len();
+  //   let s2 = k2.fold(HashSet::with_capacity(l2), |mut set, key| {
+  //     set.insert(key);
+  //     set
+  //   });
+  //   s1 == s2
+  // }
 
   fn equal_enough(t1: &HtmlToken, t2: &HtmlToken) -> bool {
     let print_error = || println!("equal_enough returned false.\nleft={:?}\nright={:?}", t1, t2);
@@ -84,12 +79,13 @@ mod tests {
       (HtmlToken::DomElement(d1), HtmlToken::DomElement(d2)) => {
         // N.B. this doesn't check children's event handlers...
 
-        let event_handlers_equal = compare_event_handler_keys(d1.event_handlers.keys(), d2.event_handlers.keys());
+        // let event_handlers_equal = compare_event_handler_keys(d1.event_handlers.keys(), d2.event_handlers.keys());
+        // true
 
-        if !event_handlers_equal {
-          print_error();
-          return false;
-        }
+        // if !event_handlers_equal {
+        //   print_error();
+        //   return false;
+        // }
 
         let w1: ComparableDomElement = ComparableDomElement::from_dom_element(&d1);
         let w2: ComparableDomElement = ComparableDomElement::from_dom_element(&d2);
@@ -122,7 +118,6 @@ mod tests {
         map.insert("baz".into(), qux.into());
         map
       },
-      event_handlers: HashMap::new(),
       event_handlers_2: EventHandlers2::new(),
     })));
   }
@@ -137,12 +132,10 @@ mod tests {
           node_type: "h1".into(),
           children: vec![],
           attributes: HashMap::new(),
-          event_handlers: HashMap::new(),
           event_handlers_2: EventHandlers2::new(),
         }),
       ],
       attributes: HashMap::new(),
-      event_handlers: HashMap::new(),
       event_handlers_2: EventHandlers2::new(),
     })));
   }
@@ -156,7 +149,6 @@ mod tests {
         HtmlToken::Text("foo bar".into()),
       ],
       attributes: HashMap::new(),
-      event_handlers: HashMap::new(),
       event_handlers_2: EventHandlers2::new(),
     })));
   }
@@ -172,7 +164,6 @@ mod tests {
         inner_dom_copy,
       ],
       attributes: HashMap::new(),
-      event_handlers: HashMap::new(),
       event_handlers_2: EventHandlers2::new(),
     })));
   }
@@ -190,7 +181,6 @@ mod tests {
         HtmlToken::Text(foo2.into()),
       ],
       attributes: HashMap::new(),
-      event_handlers: HashMap::new(),
       event_handlers_2: EventHandlers2::new(),
     })));
   }
@@ -208,7 +198,6 @@ mod tests {
         HtmlToken::Text(foo2.into()),
       ],
       attributes: HashMap::new(),
-      event_handlers: HashMap::new(),
       event_handlers_2: EventHandlers2::new(),
     })));
   }
@@ -248,7 +237,6 @@ mod tests {
       node_type: "div".into(),
       children: vec![HtmlToken::Text("foobar".into())],
       attributes: HashMap::new(),
-      event_handlers: HashMap::new(),
       event_handlers_2: EventHandlers2::new(),
     })));
   }
@@ -277,64 +265,48 @@ mod tests {
     assert!(equal_enough(&dom, &HtmlToken::Text(bar.into())));
   }
 
-  #[test]
-  fn event_handlers_work() {
-    let on_click = get_event_handler();
-    let on_click2 = get_event_handler();
-    let dom = jsx!(<div OnClick={on_click} />);
-    assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
-      node_type: "div".into(),
-      children: vec![],
-      attributes: HashMap::new(),
-      event_handlers: {
-        let mut event_handler_map = HashMap::new();
-        event_handler_map.insert(jsx_types::EventName::OnClick, on_click2);
-        event_handler_map
-      },
-      event_handlers_2: EventHandlers2::new(),
-    })));
-  }
+  // #[test]
+  // fn event_handlers_work() {
+  //   let on_click = get_event_handler();
+  //   let on_click2 = get_event_handler();
+  //   let dom = jsx!(<div OnClick={on_click} />);
+  //   assert!(equal_enough(&dom, &HtmlToken::DomElement(DomElement {
+  //     node_type: "div".into(),
+  //     children: vec![],
+  //     attributes: HashMap::new(),
+  //     event_handlers_2: EventHandlers2::new(),
+  //   })));
+  // }
 
-  #[test]
-  fn event_handlers_are_more_complicated() {
-    let on_click = get_event_handler();
-    let on_click2 = get_event_handler();
-    let on_mouse_over = get_event_handler();
-    let on_mouse_over2 = get_event_handler();
-    let on_mouse_out = get_event_handler();
-    let on_mouse_out2 = get_event_handler();
-    let dom = jsx!(<div OnClick={on_click} OnMouseOver={on_mouse_over}>
-      <h1 OnMouseOut={on_mouse_out} />
-    </div>);
+  // #[test]
+  // fn event_handlers_are_more_complicated() {
+  //   let on_click = get_event_handler();
+  //   let on_click2 = get_event_handler();
+  //   let on_mouse_over = get_event_handler();
+  //   let on_mouse_over2 = get_event_handler();
+  //   let on_mouse_out = get_event_handler();
+  //   let on_mouse_out2 = get_event_handler();
+  //   let dom = jsx!(<div OnClick={on_click} OnMouseOver={on_mouse_over}>
+  //     <h1 OnMouseOut={on_mouse_out} />
+  //   </div>);
 
-    assert!(equal_enough(
-      &dom,
-      &HtmlToken::DomElement(DomElement {
-        node_type: "div".into(),
-        children: vec![
-          HtmlToken::DomElement(DomElement {
-            node_type: "h1".into(),
-            children: vec![],
-            attributes: HashMap::new(),
-            event_handlers: {
-              let mut event_handlers_map = HashMap::new();
-              event_handlers_map.insert(jsx_types::EventName::OnMouseOut, on_mouse_out2);
-              event_handlers_map
-            },
-            event_handlers_2: EventHandlers2::new(),
-          })
-        ],
-        attributes: HashMap::new(),
-        event_handlers: {
-          let mut event_handlers_map = HashMap::new();
-          event_handlers_map.insert(jsx_types::EventName::OnClick, on_click2);
-          event_handlers_map.insert(jsx_types::EventName::OnMouseOver, on_mouse_over2);
-          event_handlers_map
-        },
-        event_handlers_2: EventHandlers2::new(),
-      })
-    ))
-  }
+  //   assert!(equal_enough(
+  //     &dom,
+  //     &HtmlToken::DomElement(DomElement {
+  //       node_type: "div".into(),
+  //       children: vec![
+  //         HtmlToken::DomElement(DomElement {
+  //           node_type: "h1".into(),
+  //           children: vec![],
+  //           attributes: HashMap::new(),
+  //           event_handlers_2: EventHandlers2::new(),
+  //         })
+  //       ],
+  //       attributes: HashMap::new(),
+  //       event_handlers_2: EventHandlers2::new(),
+  //     })
+  //   ))
+  // }
 
   #[test]
   fn failing_test() {
