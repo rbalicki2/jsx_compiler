@@ -1,15 +1,17 @@
-#![feature(fnbox)]
+
+#![feature(wasm_custom_section, wasm_import_module, proc_macro, nll)]
+
+extern crate wasm_bindgen;
 
 #[macro_use]
 extern crate serde_derive;
-
-extern crate wasm_bindgen;
 
 use std::collections::HashMap;
 use std::convert::From;
 use std::fmt;
 pub mod events;
 pub mod bare;
+pub mod diff;
 
 use events::*;
 

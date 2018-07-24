@@ -1,4 +1,4 @@
-use super::{Attributes, DomElement, HtmlToken};
+use super::Attributes;
 
 #[derive(Clone)]
 pub struct BareDomElement {
