@@ -8,8 +8,8 @@ extern crate wasm_bindgen;
 use std::collections::HashMap;
 use std::convert::From;
 use std::fmt;
-// use std::boxed::FnBox;
 pub mod events;
+pub mod bare;
 
 use events::*;
 
@@ -19,8 +19,13 @@ pub enum HtmlToken<'a> {
   DomElement(DomElement<'a>),
 }
 
-pub trait AsInnerHtml {
-  fn as_inner_html(&self) -> String; 
+impl<'a> HtmlToken<'a> {
+  pub fn make_bare_dom_element(&self) -> bare::BareHtmlToken {
+    match self {
+      HtmlToken::Text(t) => bare::BareHtmlToken::Text(t.clone()),
+      HtmlToken::DomElement(d) => bare::BareHtmlToken::DomElement(d.make_bare_dom_element()),
+    }
+  }
 }
 
 impl<'a> AsInnerHtml for HtmlToken<'a> {
@@ -37,6 +42,16 @@ pub struct DomElement<'a> {
   pub children: Vec<HtmlToken<'a>>,
   pub attributes: Attributes,
   pub event_handlers: EventHandlers<'a>,
+}
+
+impl<'a> DomElement<'a> {
+  pub fn make_bare_dom_element(&self) -> bare::BareDomElement {
+    bare::BareDomElement {
+      node_type: self.node_type.clone(),
+      children: self.children.iter().map(|c| c.make_bare_dom_element()).collect::<Vec<bare::BareHtmlToken>>(),
+      attributes: self.attributes.clone(),
+    }
+  }
 }
 
 impl<'a> AsInnerHtml for DomElement<'a> {
@@ -87,4 +102,9 @@ impl<'a, T> From<T> for HtmlToken<'a> where T: ToString {
 
 pub trait Component<'a> {
   fn render(&'a mut self) -> HtmlToken<'a>;
+}
+
+
+pub trait AsInnerHtml {
+  fn as_inner_html(&self) -> String; 
 }
