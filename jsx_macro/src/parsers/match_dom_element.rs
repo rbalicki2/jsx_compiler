@@ -3,7 +3,6 @@ use super::types::*;
 use super::util::{match_punct, match_ident, match_group, match_literal};
 use super::match_string::match_string;
 use super::match_group::match_bracketed_group_to_tokens;
-use jsx_types::events::EventName;
 
 type AttributeOrEventHandler = (String, LiteralOrGroup);
 
@@ -33,29 +32,6 @@ fn generate_dom_element_tokens(
             });
           }
         }
-
-        // let event_name_opt: Result<EventName, _> = key.parse();
-
-        // let _ = event_name_opt
-        //   .map(|event_name| {
-        //     // Succeeded parsing => we have an event handler
-
-        //     // N.B. if val is not a group resolving to a Box<FnOnce>, this will
-        //     // fail to type check
-        //     let event_name_str = event_name.to_string();
-        //     let event_name_ident = Ident::new(&event_name_str, Span::call_site());
-        //     event_opt = Some(quote!{
-        //       #event_opt
-        //       event_map.insert(::jsx_types::events::EventName::#event_name_ident, #val);
-        //     });
-        //   })
-        //   .map_err(|_| {
-        //     // Failed parsing => we have an attribute
-        //     attr_opt = Some(quote!{
-        //       #attr_opt
-        //       attr_map.insert(#key.into(), #val.into());
-        //     });
-        //   });
 
         (attr_opt, event_opt)
       }

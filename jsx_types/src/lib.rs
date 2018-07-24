@@ -3,11 +3,6 @@
 #[macro_use]
 extern crate serde_derive;
 
-#[macro_use]
-extern crate enum_derive;
-#[macro_use]
-extern crate custom_derive;
-
 extern crate wasm_bindgen;
 
 use std::collections::HashMap;
