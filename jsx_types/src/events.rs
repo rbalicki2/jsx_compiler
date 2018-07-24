@@ -115,11 +115,12 @@ custom_derive! {
   }
 }
 
+#[derive(Deserialize)]
 pub struct OnClickEvent {
-  shift_key: bool,
+  pub shift_key: bool,
 }
 
-pub type OnClickEventHandler<'a> = 'a + FnMut(OnClickEvent) -> ();
+pub type OnClickEventHandler<'a> = 'a + FnMut(&OnClickEvent) -> ();
 
 pub struct EventHandlers<'a> {
   pub on_click: Option<Box<OnClickEventHandler<'a>>>,
