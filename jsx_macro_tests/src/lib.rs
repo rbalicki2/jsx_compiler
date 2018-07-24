@@ -18,7 +18,7 @@ use std::path::PathBuf;
 mod tests {
   use super::*;
 
-  fn get_bare_div() -> HtmlToken {
+  fn get_bare_div<'a>() -> HtmlToken<'a> {
     HtmlToken::DomElement(DomElement {
       node_type: "div".into(),
       children: vec![],

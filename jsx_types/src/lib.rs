@@ -11,6 +11,7 @@ use std::collections::HashMap;
 use std::convert::From;
 use std::fmt;
 // use std::boxed::FnBox;
+pub mod events;
 
 custom_derive! {
   // N.B. uncomment these as they are tested and determined to work
