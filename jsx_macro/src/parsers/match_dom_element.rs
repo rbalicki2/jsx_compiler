@@ -17,28 +17,45 @@ fn generate_dom_element_tokens(
     .fold(
       (None, None),
       |(mut attr_opt, mut event_opt): (Option<TokenStream>, Option<TokenStream>), (key, val)| {
-        let event_name_opt: Result<EventName, _> = key.parse();
-
-        let _ = event_name_opt
-          .map(|event_name| {
-            // Succeeded parsing => we have an event handler
-
-            // N.B. if val is not a group resolving to a Box<FnOnce>, this will
-            // fail to type check
-            let event_name_str = event_name.to_string();
-            let event_name_ident = Ident::new(&event_name_str, Span::call_site());
+        // TODO figure out why this is necessary
+        let key_2: &str = &key;
+        match key_2 {
+          "OnClick" => {
             event_opt = Some(quote!{
               #event_opt
-              event_map.insert(::jsx_types::events::EventName::#event_name_ident, #val);
+              event_handlers.on_click = Some(#val);
             });
-          })
-          .map_err(|_| {
-            // Failed parsing => we have an attribute
+          },
+          _ => {
             attr_opt = Some(quote!{
               #attr_opt
               attr_map.insert(#key.into(), #val.into());
             });
-          });
+          }
+        }
+
+        // let event_name_opt: Result<EventName, _> = key.parse();
+
+        // let _ = event_name_opt
+        //   .map(|event_name| {
+        //     // Succeeded parsing => we have an event handler
+
+        //     // N.B. if val is not a group resolving to a Box<FnOnce>, this will
+        //     // fail to type check
+        //     let event_name_str = event_name.to_string();
+        //     let event_name_ident = Ident::new(&event_name_str, Span::call_site());
+        //     event_opt = Some(quote!{
+        //       #event_opt
+        //       event_map.insert(::jsx_types::events::EventName::#event_name_ident, #val);
+        //     });
+        //   })
+        //   .map_err(|_| {
+        //     // Failed parsing => we have an attribute
+        //     attr_opt = Some(quote!{
+        //       #attr_opt
+        //       attr_map.insert(#key.into(), #val.into());
+        //     });
+        //   });
 
         (attr_opt, event_opt)
       }
@@ -57,12 +74,12 @@ fn generate_dom_element_tokens(
   let event_handler_assignment = event_handler_assignment
     .map(|token_stream| {
       quote!{{
-        let mut event_map = ::std::collections::HashMap::new();
+        let mut event_handlers = ::jsx_types::events::EventHandlers::new();
         #token_stream
-        event_map
+        event_handlers
       }}
     })
-    .unwrap_or_else(|| quote!{ ::std::collections::HashMap::new() });
+    .unwrap_or_else(|| quote!{ ::jsx_types::events::EventHandlers::new() });
 
   let children_vec = quote!{
     vec![#(#children.into()),*]
@@ -75,7 +92,7 @@ fn generate_dom_element_tokens(
         node_type: #node_type.into(),
         attributes: #attribute_assignment,
         children: #children_vec,
-        event_handlers: jsx_types::events::EventHandlers::new(),
+        event_handlers: #event_handler_assignment,
       }
     )
   }}).into()

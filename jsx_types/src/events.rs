@@ -122,7 +122,7 @@ pub struct OnClickEvent {
 pub type OnClickEventHandler<'a> = 'a + FnMut(OnClickEvent) -> ();
 
 pub struct EventHandlers<'a> {
-  on_click: Option<Box<OnClickEventHandler<'a>>>,
+  pub on_click: Option<Box<OnClickEventHandler<'a>>>,
 }
 
 impl<'a> EventHandlers<'a> {
