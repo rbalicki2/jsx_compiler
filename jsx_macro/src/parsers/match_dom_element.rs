@@ -3,7 +3,7 @@ use super::types::*;
 use super::util::{match_punct, match_ident, match_group, match_literal};
 use super::match_string::match_string;
 use super::match_group::match_bracketed_group_to_tokens;
-use jsx_types::EventName;
+use jsx_types::events::EventName;
 
 type AttributeOrEventHandler = (String, LiteralOrGroup);
 
@@ -29,7 +29,7 @@ fn generate_dom_element_tokens(
             let event_name_ident = Ident::new(&event_name_str, Span::call_site());
             event_opt = Some(quote!{
               #event_opt
-              event_map.insert(::jsx_types::EventName::#event_name_ident, #val);
+              event_map.insert(::jsx_types::events::EventName::#event_name_ident, #val);
             });
           })
           .map_err(|_| {
