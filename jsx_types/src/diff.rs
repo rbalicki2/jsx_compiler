@@ -18,4 +18,14 @@ pub enum DiffOperation {
   Replace(ReplaceOperation),
 }
 
+impl DiffOperation {
+  pub fn initial_diff(inner_html: &str) -> DiffOperation {
+    DiffOperation::Replace(
+      ReplaceOperation {
+        new_inner_html: inner_html.to_string(),
+      }
+    )
+  }
+}
+
 pub type Diff = Vec<(Path, DiffOperation)>;
