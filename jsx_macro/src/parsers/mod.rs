@@ -20,7 +20,8 @@ named!(
         // N.B. explicitly cast the returned value as a HtmlToken
         // because otherwise jsx!({ foo }) is valid and can be of any type.
         extern crate jsx_types;
-        let casted: jsx_types::HtmlToken = { #token_stream.into() };
+        let mut casted: jsx_types::HtmlToken = { #token_stream.into() };
+        casted.merge_string_tokens();
         casted
       })
     }

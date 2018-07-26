@@ -2,9 +2,9 @@
 #![feature(wasm_custom_section, wasm_import_module, proc_macro, nll)]
 
 extern crate wasm_bindgen;
-
 #[macro_use]
 extern crate serde_derive;
+extern crate take_mut;
 
 use std::collections::HashMap;
 use std::convert::From;
@@ -28,6 +28,50 @@ impl<'a> HtmlToken<'a> {
       HtmlToken::DomElement(d) => bare::BareHtmlToken::DomElement(d.as_bare_dom_element()),
     }
   }
+
+  pub fn merge_string_tokens(&mut self) {
+    match self {
+      HtmlToken::Text(_) => {},
+      HtmlToken::DomElement(ref mut d) => {
+        for child in d.children.iter_mut() {
+          child.merge_string_tokens()
+        }
+        take_mut::take(&mut d.children, |children| {
+          consume_and_merge(children)
+        })
+      }
+    }
+  }
+}
+
+fn consume_and_merge(children: Vec<HtmlToken>) -> Vec<HtmlToken> {
+  children.into_iter()
+    .fold(vec![], |mut accum, child| {
+      match child {
+        HtmlToken::DomElement(_) => {
+          accum.push(child);
+          accum
+        },
+        HtmlToken::Text(ref current_text) => {
+          let last_opt = accum.pop();
+          match last_opt {
+            Some(HtmlToken::Text(ref last_text)) => {
+              accum.push(HtmlToken::Text(format!("{} {}", last_text, current_text)));
+              accum
+            },
+            Some(x) => {
+              accum.push(x);
+              accum.push(child);
+              accum
+            },
+            None => {
+              accum.push(child);
+              accum
+            }
+          }
+        },
+      }
+    })
 }
 
 impl<'a> AsInnerHtml for HtmlToken<'a> {
@@ -85,11 +129,9 @@ impl<'a> fmt::Debug for DomElement<'a> {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
     write!(
       f,
-      "DomElement {{ node_type: {}, children: {:?}, attributes: {:?}, event_handlers with keys: <not impl> }}",
+      "DomElement {{ node_type: {}, children: {:?} }}",
       self.node_type,
-      self.children,
-      self.attributes,
-      // self.event_handlers.keys().map(|e| e.to_string()).collect::<Vec<String>>()
+      self.children
     )
   }
 }

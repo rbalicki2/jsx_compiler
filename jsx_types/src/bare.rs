@@ -1,5 +1,5 @@
 use super::{Attributes, AsInnerHtml};
-use super::diff::{Diff, DiffOperation};
+use super::diff::{Diff, DiffItem, DiffOperation, Path, ReplaceOperation, InsertOperation};
 
 #[derive(Clone)]
 pub struct BareDomElement {
@@ -15,13 +15,116 @@ pub enum BareHtmlToken {
 }
 
 impl BareHtmlToken {
-  pub fn get_diff_with(&self, other: &BareHtmlToken) -> Diff {
-    DiffOperation::initial_diff(&self.as_inner_html())
-    // unimplemented!()
+  /**
+   * Diffing algorithm
+   *
+   * - If it's a string, compare strings
+   * - If the node_type is the same, keep it, and:
+   *   - for each existing child
+   *     - If it has the same node_type
+   *       - keep it, and repeat
+   *     - If it has a different node_type, add it
+   *   - for each additional new child
+   *     - Add it
+   *
+   * - Thus <div><h1><h2 /></h1></div> to <div><h1><h3 /></h1></div>
+   *   should see that div is the same, see that h1 is the same,
+   *   see that "h2" !== "h3", and create a diff operation for
+   *   that.
+   *
+   * - In all cases, "other" is the old rendered stuff that we
+   *   want to get rid of efficiently.
+   */
+  pub fn get_diff_with(&self, other: &Self) -> Diff {
+    // N.B. other will be an option.... Dammit
+    self.get_path_diff_with(other, vec![0])
   }
+
+  fn get_path_diff_with(&self, other: &Self, path: Path) -> Diff {
+    match (self, other) {
+      (BareHtmlToken::Text(self_text), BareHtmlToken::Text(other_text)) => {
+        BareHtmlToken::get_diff_from_strings(self_text, other_text, path)
+          .into_iter()
+          .collect::<Diff>()
+      },
+      (BareHtmlToken::DomElement(self_dom), BareHtmlToken::DomElement(other_dom)) => {
+        BareHtmlToken::get_diff_from_dom_elements(self_dom, other_dom, path)
+      },
+      _ => {
+        vec![self.get_replace_self_diff_item(path)]
+      },
+    }
+  }
+
+  fn get_diff_from_strings(self_str: &str, other_str: &str, path: Path) -> Option<DiffItem> {
+    if self_str == other_str {
+      None
+    } else {
+      Some(get_replace_diff_item(self_str.to_string(), path))
+    }
+  }
+
+  fn get_diff_from_dom_elements(
+    self_dom: &BareDomElement,
+    other_dom: &BareDomElement,
+    path: Path
+  ) -> Diff {
+    if self_dom.node_type != other_dom.node_type {
+      vec![get_replace_diff_item(self_dom.as_inner_html(), path)]
+    } else {
+      let self_children = &self_dom.children;
+      let other_children = &other_dom.children;
+      self_children.iter()
+        .zip(0..(self_children.len()))
+        .flat_map(|(&ref self_html_token, i)| {
+          let mut new_path = path.clone();
+          new_path.push(i);
+
+          match other_children.get(i) {
+            Some(other_html_token) => {
+              self_html_token.get_path_diff_with(other_html_token, new_path)
+            },
+            None => {
+              vec![self_html_token.get_insert_self_diff_item(new_path)]
+            }
+          }
+        })
+        .collect::<Diff>()
+    }
+  }
+
+  // N.B. a little weird that this is defined here, and not also on BareDomElement
+  fn get_replace_self_diff_item(&self, path: Path) -> DiffItem {
+    get_replace_diff_item(self.as_inner_html(), path)
+  }
+
+  fn get_insert_self_diff_item(&self, path: Path) -> DiffItem {
+    get_insert_diff_item(self.as_inner_html(), path)
+  }
+
 }
 
+fn get_replace_diff_item(new_inner_html: String, path: Path) -> DiffItem {
+  (
+    path,
+    DiffOperation::Replace(
+      ReplaceOperation {
+        new_inner_html,
+      }
+    )
+  )
+}
 
+fn get_insert_diff_item(new_inner_html: String, path: Path) -> DiffItem {
+  (
+    path,
+    DiffOperation::Insert(
+      InsertOperation {
+        new_inner_html,
+      }
+    )
+  )
+}
 
 impl AsInnerHtml for BareHtmlToken {
   fn as_inner_html(&self) -> String {
@@ -61,11 +164,9 @@ impl ::std::fmt::Debug for BareDomElement {
   fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
     write!(
       f,
-      "DomElement {{ node_type: {}, children: {:?}, attributes: {:?}, event_handlers with keys: <not impl> }}",
+      "DomElement {{ node_type: {}, children: {:?} }}",
       self.node_type,
-      self.children,
-      self.attributes,
-      // self.event_handlers.keys().map(|e| e.to_string()).collect::<Vec<String>>()
+      self.children
     )
   }
 }

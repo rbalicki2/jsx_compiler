@@ -1,19 +1,29 @@
 type NewInnerHtml = String;
 
-type Path = Vec<usize>;
+pub type Path = Vec<usize>;
 
 // #[wasm_bindgen]
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct ReplaceOperation {
   pub new_inner_html: NewInnerHtml,
 }
 
+#[derive(Serialize, Debug)]
+pub struct InsertOperation {
+  pub new_inner_html: NewInnerHtml,
+}
+
+#[derive(Serialize, Debug)]
+pub struct DeleteOperation {}
+
 // N.B. this panics... we need to enable it if we ever have
 // anything more complicated than just replacing sections.
 // #[wasm_bindgen]
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub enum DiffOperation {
   Replace(ReplaceOperation),
+  Insert(InsertOperation),
+  Delete(DeleteOperation),
 }
 
 impl DiffOperation {
@@ -31,4 +41,5 @@ impl DiffOperation {
   }
 }
 
-pub type Diff = Vec<(Path, DiffOperation)>;
+pub type DiffItem = (Path, DiffOperation);
+pub type Diff = Vec<DiffItem>;
