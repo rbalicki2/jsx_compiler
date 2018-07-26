@@ -22,10 +22,10 @@ pub enum HtmlToken<'a> {
 }
 
 impl<'a> HtmlToken<'a> {
-  pub fn make_bare_dom_element(&self) -> bare::BareHtmlToken {
+  pub fn as_bare_token(&self) -> bare::BareHtmlToken {
     match self {
       HtmlToken::Text(t) => bare::BareHtmlToken::Text(t.clone()),
-      HtmlToken::DomElement(d) => bare::BareHtmlToken::DomElement(d.make_bare_dom_element()),
+      HtmlToken::DomElement(d) => bare::BareHtmlToken::DomElement(d.as_bare_dom_element()),
     }
   }
 }
@@ -47,10 +47,10 @@ pub struct DomElement<'a> {
 }
 
 impl<'a> DomElement<'a> {
-  pub fn make_bare_dom_element(&self) -> bare::BareDomElement {
+  pub fn as_bare_dom_element(&self) -> bare::BareDomElement {
     bare::BareDomElement {
       node_type: self.node_type.clone(),
-      children: self.children.iter().map(|c| c.make_bare_dom_element()).collect::<Vec<bare::BareHtmlToken>>(),
+      children: self.children.iter().map(|c| c.as_bare_token()).collect::<Vec<bare::BareHtmlToken>>(),
       attributes: self.attributes.clone(),
     }
   }

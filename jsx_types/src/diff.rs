@@ -1,5 +1,3 @@
-use wasm_bindgen::prelude::*;
-
 type NewInnerHtml = String;
 
 type Path = Vec<usize>;
@@ -19,12 +17,17 @@ pub enum DiffOperation {
 }
 
 impl DiffOperation {
-  pub fn initial_diff(inner_html: &str) -> DiffOperation {
-    DiffOperation::Replace(
-      ReplaceOperation {
-        new_inner_html: inner_html.to_string(),
-      }
-    )
+  pub fn initial_diff(inner_html: &str) -> Diff {
+    vec![
+      (
+        vec![],
+        DiffOperation::Replace(
+          ReplaceOperation {
+            new_inner_html: inner_html.to_string(),
+          }
+        )
+      )
+    ]
   }
 }
 
