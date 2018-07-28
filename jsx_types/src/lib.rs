@@ -198,8 +198,9 @@ impl<'a> From<i32> for WrappedOption<HtmlToken<'a>> {
 
 // TODO make a macro or implement more
 
-pub trait Component<'a> {
-  fn render(&'a mut self) -> HtmlToken<'a>;
+// TODO make a TopLevelComponent trait/type alias
+pub trait Component<'a, T> {
+  fn render(&'a mut self, T) -> HtmlToken<'a>;
 }
 
 pub trait AsInnerHtml {
