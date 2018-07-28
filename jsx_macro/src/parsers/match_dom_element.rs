@@ -19,19 +19,19 @@ fn generate_dom_element_tokens(
         // TODO figure out why this is necessary
         let key_2: &str = &key;
         match key_2 {
-          "OnClick" => {
+          "on_click" => {
             event_opt = Some(quote!{
               #event_opt
               event_handlers.on_click = Some(#val);
             });
           },
-          "OnMouseOver" => {
+          "on_mouse_over" => {
             event_opt = Some(quote!{
               #event_opt
               event_handlers.on_mouse_over = Some(#val);
             });
           },
-          "OnMouseOut" => {
+          "on_mouse_out" => {
             event_opt = Some(quote!{
               #event_opt
               event_handlers.on_mouse_out = Some(#val);

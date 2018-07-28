@@ -1,5 +1,14 @@
 use super::{Attributes, AsInnerHtml};
-use super::diff::{Diff, DiffItem, DiffOperation, Path, ReplaceOperation, InsertOperation, DeleteOperation};
+use super::diff::{
+  Diff,
+  DiffItem,
+  DiffOperation,
+  Path,
+  ReplaceOperation,
+  InsertOperation,
+  DeleteOperation,
+  UpdateAttributesOperation,
+};
 
 #[derive(Clone)]
 pub struct BareDomElement {
@@ -67,8 +76,12 @@ impl BareHtmlToken {
     other_dom: &BareDomElement,
     path: Path
   ) -> Diff {
-    if (self_dom.node_type != other_dom.node_type) || (self_dom.attributes != other_dom.attributes) {
+    if self_dom.node_type != other_dom.node_type {
       vec![get_replace_diff_item(self_dom.as_inner_html(), path)]
+    } else if self_dom.attributes != other_dom.attributes {
+      vec![
+        get_update_attributes_diff_item(self_dom.attributes.clone(), path)
+      ]
     } else {
       let self_children = &self_dom.children;
       let other_children = &other_dom.children;
@@ -136,6 +149,15 @@ fn get_delete_diff_item(path: Path) -> DiffItem {
   (
     path,
     DiffOperation::Delete(DeleteOperation {})
+  )
+}
+
+fn get_update_attributes_diff_item(new_attributes: Attributes, path: Path) -> DiffItem {
+  (
+    path,
+    DiffOperation::UpdateAttributes(UpdateAttributesOperation {
+      new_attributes,
+    })
   )
 }
 
