@@ -35,14 +35,20 @@ fn generate_dom_element_tokens(
             event_opt = Some(quote!{
               #event_opt
               event_handlers.on_mouse_out = Some(#val);
-            });()
+            });
           },
           "on_input" => {
             event_opt = Some(quote!{
               #event_opt
               event_handlers.on_input = Some(#val);
-            })
+            });
           },
+          "on_keydown" => {
+            event_opt = Some(quote!{
+              #event_opt
+              event_handlers.on_keydown = Some(#val);
+            });
+          }
           _ => {
             attr_opt = Some(quote!{
               #attr_opt

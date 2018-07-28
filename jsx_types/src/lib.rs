@@ -145,14 +145,14 @@ impl<'a> From<HtmlToken<'a>> for WrappedOption<HtmlToken<'a>> {
   }
 }
 
-impl<'a, T> From<Option<T>> for HtmlToken<'a> where T: Into<HtmlToken<'a>> {
-  fn from(opt: Option<T>) -> Self {
-    match opt {
-      Some(t) => t.into(),
-      None => HtmlToken::Text("".to_string()),
-    }
-  }
-}
+// impl<'a, T> From<Option<T>> for HtmlToken<'a> where T: Into<HtmlToken<'a>> {
+//   fn from(opt: Option<T>) -> Self {
+//     match opt {
+//       Some(t) => t.into(),
+//       None => HtmlToken::Text("".to_string()),
+//     }
+//   }
+// }
 
 impl<'a, T> From<Option<T>> for WrappedOption<HtmlToken<'a>> where T: Into<HtmlToken<'a>> {
   fn from(opt: Option<T>) -> Self {
@@ -193,6 +193,30 @@ impl<'a> From<i32> for HtmlToken<'a> {
 impl<'a> From<i32> for WrappedOption<HtmlToken<'a>> {
   fn from(i: i32) -> Self {
     WrappedOption(Some(i.into()))
+  }
+}
+
+impl<'a> From<u32> for HtmlToken<'a> {
+  fn from(u: u32) -> Self {
+    HtmlToken::Text(u.to_string())
+  }
+}
+
+impl<'a> From<u32> for WrappedOption<HtmlToken<'a>> {
+  fn from(u: u32) -> Self {
+    WrappedOption(Some(u.into()))
+  }
+}
+
+impl<'a> From<usize> for HtmlToken<'a> {
+  fn from(u: usize) -> Self {
+    HtmlToken::Text(u.to_string())
+  }
+}
+
+impl<'a> From<usize> for WrappedOption<HtmlToken<'a>> {
+  fn from(u: usize) -> Self {
+    WrappedOption(Some(u.into()))
   }
 }
 

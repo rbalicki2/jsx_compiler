@@ -27,6 +27,21 @@ pub struct MouseEvent {
 pub type MouseEventHandler<'a> = EventHandler<'a, MouseEvent>;
 
 #[derive(Deserialize)]
+pub struct KeyboardEvent {
+  pub alt_key: bool,
+  pub char_code: u32,
+  pub code: String,
+  pub ctrl_key: bool,
+  pub key: String,
+  pub key_code: u32,
+  pub meta_key: bool,
+  pub shift_key: bool,
+  pub time_stamp: f32,
+  pub event_type: String,
+}
+pub type KeyboardEventHandler<'a> = EventHandler<'a, KeyboardEvent>;
+
+#[derive(Deserialize)]
 pub struct InputEvent {
   pub data: Option<String>,
   // N.B. not in firefox?
@@ -45,6 +60,7 @@ pub struct EventHandlers<'a> {
   pub on_mouse_over: Option<Box<MouseEventHandler<'a>>>,
   pub on_mouse_out: Option<Box<MouseEventHandler<'a>>>,
   pub on_input: Option<Box<InputEventHandler<'a>>>,
+  pub on_keydown: Option<Box<KeyboardEventHandler<'a>>>,
 }
 
 impl<'a> EventHandlers<'a> {
@@ -54,6 +70,7 @@ impl<'a> EventHandlers<'a> {
       on_mouse_over: None,
       on_mouse_out: None,
       on_input: None,
+      on_keydown: None,
     }
   }
 }
