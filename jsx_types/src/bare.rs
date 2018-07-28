@@ -89,7 +89,7 @@ impl BareHtmlToken {
           }
         })
         .chain(
-          (other_children.len()..self_children.len())
+          (self_children.len()..other_children.len())
             .map(|i| {
               let mut new_path = path.clone();
               new_path.push(i);
