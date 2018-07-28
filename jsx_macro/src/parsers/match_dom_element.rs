@@ -57,9 +57,10 @@ fn generate_dom_element_tokens(
     })
     .unwrap_or_else(|| quote!{ ::jsx_types::events::EventHandlers::new() });
 
-  let children_vec = quote!{
-    vec![#(#children.into()),*]
-  };
+  let children_vec = quote!{{
+    let vec: Vec<::jsx_types::WrappedOption<::jsx_types::HtmlToken>> = vec![#(#children.into()),*];
+    vec.into_iter().flat_map(|o| o.0).collect()
+  }};
 
   // N.B. jsx_types is in scope from mod.rs
   (quote!{{

@@ -14,6 +14,8 @@ pub mod diff;
 
 use events::*;
 
+pub struct WrappedOption<T>(pub Option<T>);
+
 #[derive(Debug)]
 pub enum HtmlToken<'a> {
   Text(String),
@@ -137,6 +139,12 @@ impl<'a> fmt::Debug for DomElement<'a> {
 
 pub type Attributes = HashMap<String, String>;
 
+impl<'a> From<HtmlToken<'a>> for WrappedOption<HtmlToken<'a>> {
+  fn from(t: HtmlToken<'a>) -> Self {
+    WrappedOption(Some(t))
+  }
+}
+
 impl<'a, T> From<Option<T>> for HtmlToken<'a> where T: Into<HtmlToken<'a>> {
   fn from(opt: Option<T>) -> Self {
     match opt {
@@ -146,9 +154,21 @@ impl<'a, T> From<Option<T>> for HtmlToken<'a> where T: Into<HtmlToken<'a>> {
   }
 }
 
+impl<'a, T> From<Option<T>> for WrappedOption<HtmlToken<'a>> where T: Into<HtmlToken<'a>> {
+  fn from(opt: Option<T>) -> Self {
+    WrappedOption(opt.map(|t| t.into()))
+  }
+}
+
 impl<'a> From<String> for HtmlToken<'a> {
   fn from(s: String) -> Self {
     HtmlToken::Text(s)
+  }
+}
+
+impl<'a> From<String> for WrappedOption<HtmlToken<'a>> {
+  fn from(s: String) -> Self {
+    WrappedOption(Some(s.into()))
   }
 }
 
@@ -158,9 +178,21 @@ impl<'a, 'b> From<&'b str> for HtmlToken<'a> {
   }
 }
 
+impl<'a, 'b> From<&'b str> for WrappedOption<HtmlToken<'a>> {
+  fn from(s: &str) -> Self {
+    WrappedOption(Some(s.into()))
+  }
+}
+
 impl<'a> From<i32> for HtmlToken<'a> {
   fn from(i: i32) -> Self {
     HtmlToken::Text(i.to_string())
+  }
+}
+
+impl<'a> From<i32> for WrappedOption<HtmlToken<'a>> {
+  fn from(i: i32) -> Self {
+    WrappedOption(Some(i.into()))
   }
 }
 
