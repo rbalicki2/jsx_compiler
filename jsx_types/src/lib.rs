@@ -14,7 +14,7 @@ pub mod diff;
 
 use events::*;
 
-pub struct WrappedOption<T>(pub Option<T>);
+pub struct WrappedVector<T>(pub Vec<T>);
 
 #[derive(Debug)]
 pub enum HtmlToken<'a> {
@@ -139,24 +139,24 @@ impl<'a> fmt::Debug for DomElement<'a> {
 
 pub type Attributes = HashMap<String, String>;
 
-impl<'a> From<HtmlToken<'a>> for WrappedOption<HtmlToken<'a>> {
+impl<'a> From<HtmlToken<'a>> for WrappedVector<HtmlToken<'a>> {
   fn from(t: HtmlToken<'a>) -> Self {
-    WrappedOption(Some(t))
+    WrappedVector(vec![t])
   }
 }
 
-// impl<'a, T> From<Option<T>> for HtmlToken<'a> where T: Into<HtmlToken<'a>> {
-//   fn from(opt: Option<T>) -> Self {
-//     match opt {
-//       Some(t) => t.into(),
-//       None => HtmlToken::Text("".to_string()),
-//     }
-//   }
-// }
-
-impl<'a, T> From<Option<T>> for WrappedOption<HtmlToken<'a>> where T: Into<HtmlToken<'a>> {
+impl<'a, T> From<Option<T>> for HtmlToken<'a> where T: Into<HtmlToken<'a>> {
   fn from(opt: Option<T>) -> Self {
-    WrappedOption(opt.map(|t| t.into()))
+    match opt {
+      Some(t) => t.into(),
+      None => HtmlToken::Text("".to_string()),
+    }
+  }
+}
+
+impl<'a, T> From<Option<T>> for WrappedVector<HtmlToken<'a>> where T: Into<HtmlToken<'a>> {
+  fn from(opt: Option<T>) -> Self {
+    WrappedVector(opt.into_iter().map(|t| t.into()).collect())
   }
 }
 
@@ -166,9 +166,9 @@ impl<'a> From<String> for HtmlToken<'a> {
   }
 }
 
-impl<'a> From<String> for WrappedOption<HtmlToken<'a>> {
+impl<'a> From<String> for WrappedVector<HtmlToken<'a>> {
   fn from(s: String) -> Self {
-    WrappedOption(Some(s.into()))
+    WrappedVector(vec![s.into()])
   }
 }
 
@@ -178,9 +178,9 @@ impl<'a, 'b> From<&'b str> for HtmlToken<'a> {
   }
 }
 
-impl<'a, 'b> From<&'b str> for WrappedOption<HtmlToken<'a>> {
+impl<'a, 'b> From<&'b str> for WrappedVector<HtmlToken<'a>> {
   fn from(s: &str) -> Self {
-    WrappedOption(Some(s.into()))
+    WrappedVector(vec![s.into()])
   }
 }
 
@@ -190,9 +190,9 @@ impl<'a> From<i32> for HtmlToken<'a> {
   }
 }
 
-impl<'a> From<i32> for WrappedOption<HtmlToken<'a>> {
+impl<'a> From<i32> for WrappedVector<HtmlToken<'a>> {
   fn from(i: i32) -> Self {
-    WrappedOption(Some(i.into()))
+    WrappedVector(vec![i.into()])
   }
 }
 
@@ -202,9 +202,9 @@ impl<'a> From<u32> for HtmlToken<'a> {
   }
 }
 
-impl<'a> From<u32> for WrappedOption<HtmlToken<'a>> {
+impl<'a> From<u32> for WrappedVector<HtmlToken<'a>> {
   fn from(u: u32) -> Self {
-    WrappedOption(Some(u.into()))
+    WrappedVector(vec![u.into()])
   }
 }
 
@@ -214,9 +214,9 @@ impl<'a> From<usize> for HtmlToken<'a> {
   }
 }
 
-impl<'a> From<usize> for WrappedOption<HtmlToken<'a>> {
+impl<'a> From<usize> for WrappedVector<HtmlToken<'a>> {
   fn from(u: usize) -> Self {
-    WrappedOption(Some(u.into()))
+    WrappedVector(vec![u.into()])
   }
 }
 
