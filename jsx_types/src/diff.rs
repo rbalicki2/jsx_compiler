@@ -30,9 +30,9 @@ impl DiffOperation {
   pub fn initial_diff(inner_html: &str) -> Diff {
     vec![
       (
-        vec![],
-        DiffOperation::Replace(
-          ReplaceOperation {
+        vec![0],
+        DiffOperation::Insert(
+          InsertOperation {
             new_inner_html: inner_html.to_string(),
           }
         )

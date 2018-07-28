@@ -25,6 +25,18 @@ fn generate_dom_element_tokens(
               event_handlers.on_click = Some(#val);
             });
           },
+          "OnMouseOver" => {
+            event_opt = Some(quote!{
+              #event_opt
+              event_handlers.on_mouse_over = Some(#val);
+            });
+          },
+          "OnMouseOut" => {
+            event_opt = Some(quote!{
+              #event_opt
+              event_handlers.on_mouse_out = Some(#val);
+            });()
+          },
           _ => {
             attr_opt = Some(quote!{
               #attr_opt
