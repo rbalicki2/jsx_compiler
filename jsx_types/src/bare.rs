@@ -19,13 +19,12 @@ impl BareHtmlToken {
    * Diffing algorithm
    *
    * - If it's a string, compare strings
-   * - If the node_type is the same, keep it, and:
+   * - If the node_type and attributes are the same, keep it, and:
    *   - for each existing child
    *     - If it has the same node_type
    *       - keep it, and repeat
-   *     - If it has a different node_type, add it
-   *   - for each additional new child
-   *     - Add it
+   * - If it has a different node_type or attributes, add it
+   * - for each additional new child, add it
    *
    * - Thus <div><h1><h2 /></h1></div> to <div><h1><h3 /></h1></div>
    *   should see that div is the same, see that h1 is the same,
@@ -68,7 +67,7 @@ impl BareHtmlToken {
     other_dom: &BareDomElement,
     path: Path
   ) -> Diff {
-    if self_dom.node_type != other_dom.node_type {
+    if (self_dom.node_type != other_dom.node_type) || (self_dom.attributes != other_dom.attributes) {
       vec![get_replace_diff_item(self_dom.as_inner_html(), path)]
     } else {
       let self_children = &self_dom.children;

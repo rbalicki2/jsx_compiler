@@ -1,4 +1,4 @@
-pub type MouseEventHandler<'a> = 'a + FnMut(&MouseEvent) -> ();
+pub type EventHandler<'a, T> = 'a + FnMut(&T) -> ();
 
 #[derive(Deserialize)]
 pub struct MouseEvent {
@@ -24,11 +24,27 @@ pub struct MouseEvent {
   pub x: u32,
   pub y: u32,
 }
+pub type MouseEventHandler<'a> = EventHandler<'a, MouseEvent>;
+
+#[derive(Deserialize)]
+pub struct InputEvent {
+  pub data: Option<String>,
+  // N.B. not in firefox?
+  // pub input_type: String, // todo use enum
+  pub time_stamp: f32,
+  pub event_type: String,
+  pub which: u32,
+
+  // *new field*
+  pub value: Option<String>, // This is provided by our JS!
+}
+pub type InputEventHandler<'a> = EventHandler<'a, InputEvent>;
 
 pub struct EventHandlers<'a> {
   pub on_click: Option<Box<MouseEventHandler<'a>>>,
   pub on_mouse_over: Option<Box<MouseEventHandler<'a>>>,
   pub on_mouse_out: Option<Box<MouseEventHandler<'a>>>,
+  pub on_input: Option<Box<InputEventHandler<'a>>>,
 }
 
 impl<'a> EventHandlers<'a> {
@@ -37,6 +53,7 @@ impl<'a> EventHandlers<'a> {
       on_click: None,
       on_mouse_over: None,
       on_mouse_out: None,
+      on_input: None,
     }
   }
 }
