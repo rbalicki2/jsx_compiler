@@ -1,4 +1,3 @@
-
 #![feature(wasm_custom_section, wasm_import_module, proc_macro, nll)]
 
 extern crate wasm_bindgen;
@@ -138,16 +137,38 @@ impl<'a> fmt::Debug for DomElement<'a> {
 
 pub type Attributes = HashMap<String, String>;
 
-impl<'a, T> From<T> for HtmlToken<'a> where T: ToString {
-  fn from(t: T) -> Self {
-    HtmlToken::Text(t.to_string())
+impl<'a, T> From<Option<T>> for HtmlToken<'a> where T: Into<HtmlToken<'a>> {
+  fn from(opt: Option<T>) -> Self {
+    match opt {
+      Some(t) => t.into(),
+      None => HtmlToken::Text("".to_string()),
+    }
   }
 }
+
+impl<'a> From<String> for HtmlToken<'a> {
+  fn from(s: String) -> Self {
+    HtmlToken::Text(s)
+  }
+}
+
+impl<'a, 'b> From<&'b str> for HtmlToken<'a> {
+  fn from(s: &str) -> Self {
+    HtmlToken::Text(s.to_string())
+  }
+}
+
+impl<'a> From<i32> for HtmlToken<'a> {
+  fn from(i: i32) -> Self {
+    HtmlToken::Text(i.to_string())
+  }
+}
+
+// TODO make a macro or implement more
 
 pub trait Component<'a> {
   fn render(&'a mut self) -> HtmlToken<'a>;
 }
-
 
 pub trait AsInnerHtml {
   fn as_inner_html(&self) -> String; 

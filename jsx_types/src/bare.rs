@@ -1,5 +1,5 @@
 use super::{Attributes, AsInnerHtml};
-use super::diff::{Diff, DiffItem, DiffOperation, Path, ReplaceOperation, InsertOperation};
+use super::diff::{Diff, DiffItem, DiffOperation, Path, ReplaceOperation, InsertOperation, DeleteOperation};
 
 #[derive(Clone)]
 pub struct BareDomElement {
@@ -36,7 +36,6 @@ impl BareHtmlToken {
    *   want to get rid of efficiently.
    */
   pub fn get_diff_with(&self, other: &Self) -> Diff {
-    // N.B. other will be an option.... Dammit
     self.get_path_diff_with(other, vec![0])
   }
 
@@ -89,6 +88,14 @@ impl BareHtmlToken {
             }
           }
         })
+        .chain(
+          (other_children.len()..self_children.len())
+            .map(|i| {
+              let mut new_path = path.clone();
+              new_path.push(i);
+              get_delete_diff_item(new_path)
+            })
+        )
         .collect::<Diff>()
     }
   }
@@ -123,6 +130,13 @@ fn get_insert_diff_item(new_inner_html: String, path: Path) -> DiffItem {
         new_inner_html,
       }
     )
+  )
+}
+
+fn get_delete_diff_item(path: Path) -> DiffItem {
+  (
+    path,
+    DiffOperation::Delete(DeleteOperation {})
   )
 }
 
