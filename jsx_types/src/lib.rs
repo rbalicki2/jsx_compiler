@@ -245,6 +245,11 @@ pub trait Component<'a, T> {
   fn render(&'a mut self, T) -> HtmlToken<'a>;
 }
 
+pub trait StatelessComponent<'a, T> {
+  // N.B. maybe we should rename render to render_stateless
+  fn render(T) -> HtmlToken<'a>;
+}
+
 pub trait AsInnerHtml {
   fn as_inner_html(&self) -> String; 
 }
