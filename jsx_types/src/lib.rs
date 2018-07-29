@@ -220,6 +220,24 @@ impl<'a> From<usize> for WrappedVector<HtmlToken<'a>> {
   }
 }
 
+impl<'a> From<char> for HtmlToken<'a> {
+  fn from(c: char) -> Self {
+    HtmlToken::Text(c.to_string())
+  }
+}
+
+impl<'a> From<char> for WrappedVector<HtmlToken<'a>> {
+  fn from(c: char) -> Self {
+    WrappedVector(vec![c.into()])
+  }
+}
+
+impl<'a> From<Vec<HtmlToken<'a>>> for WrappedVector<HtmlToken<'a>> {
+  fn from(v: Vec<HtmlToken<'a>>) -> Self {
+    WrappedVector(v)
+  }
+}
+
 // TODO make a macro or implement more
 
 // TODO make a TopLevelComponent trait/type alias
