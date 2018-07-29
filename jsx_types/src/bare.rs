@@ -78,14 +78,16 @@ impl BareHtmlToken {
   ) -> Diff {
     if self_dom.node_type != other_dom.node_type {
       vec![get_replace_diff_item(self_dom.as_inner_html(), path)]
-    } else if self_dom.attributes != other_dom.attributes {
-      vec![
-        get_update_attributes_diff_item(self_dom.attributes.clone(), path)
-      ]
     } else {
+      let mut diff: Diff = vec![];
+      if self_dom.attributes != other_dom.attributes {
+        diff.push(
+          get_update_attributes_diff_item(self_dom.attributes.clone(), path.clone())
+        );
+      }
       let self_children = &self_dom.children;
       let other_children = &other_dom.children;
-      self_children.iter()
+      diff.append(&mut self_children.iter()
         .zip(0..(self_children.len()))
         .flat_map(|(&ref self_html_token, i)| {
           let mut new_path = path.clone();
@@ -108,7 +110,8 @@ impl BareHtmlToken {
               get_delete_diff_item(new_path)
             })
         )
-        .collect::<Diff>()
+        .collect::<Diff>());
+      diff
     }
   }
 
