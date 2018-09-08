@@ -1,4 +1,4 @@
-#![feature(proc_macro, proc_macro_non_items)]
+#![feature(proc_macro_non_items)]
 
 extern crate compiletest_rs as compiletest;
 

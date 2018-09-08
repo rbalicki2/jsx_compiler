@@ -1,4 +1,4 @@
-#![feature(proc_macro)]
+#![feature(proc_macro_span, proc_macro_raw_ident)]
 
 extern crate jsx_types;
 extern crate proc_macro;

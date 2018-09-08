@@ -1,4 +1,4 @@
-#![feature(wasm_custom_section, wasm_import_module, proc_macro, nll)]
+#![feature(nll)]
 
 extern crate wasm_bindgen;
 #[macro_use]

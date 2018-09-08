@@ -122,7 +122,12 @@ pub fn get_filler_spaces(input: TokenTreeSlice, do_it: bool) -> String {
     return "".into();
   }
 
-  let first_opt = input.get(0).map(|i| i.span().end());
+
+
+  let first_opt = input.get(0).map(|i| {
+    // let foo: () = i.span();
+    i.span().end()
+  });
   let second_opt = input.get(1).map(|i| i.span().start());
   match (first_opt, second_opt) {
     (Some(first), Some(second)) => {

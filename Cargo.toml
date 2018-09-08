@@ -4,6 +4,6 @@ members = [
   "jsx_macro",
   "jsx_types",
   "jsx_macro_tests",
-  "proc-macro2",
-  "quote",
+  # "proc-macro2",
+  # "quote",
 ]
