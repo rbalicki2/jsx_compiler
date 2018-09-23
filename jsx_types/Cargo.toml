@@ -13,6 +13,7 @@ serde_derive = "1.0.62"
 take_mut = "0.2.2"
 web-sys = { version = "0.1", features = [
   "Document",
+  "DocumentFragment",
   "Element",
   "Window",
   "HtmlElement",
@@ -20,6 +21,8 @@ web-sys = { version = "0.1", features = [
   "Event",
   "UiEvent",
   "MouseEvent",
+  "KeyboardEvent",
+  "InputEvent",
   "EventTarget",
   "Node",
   "NodeList"
