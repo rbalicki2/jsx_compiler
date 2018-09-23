@@ -1,29 +1,30 @@
 pub type EventHandler<'a, T> = 'a + FnMut(&T) -> ();
+pub use web_sys::{Element, Document, Window, MouseEvent, HtmlElement, EventTarget, Event, Node};
 
-#[derive(Deserialize)]
-pub struct MouseEvent {
-  pub alt_key: bool,
-  pub client_x: u32,
-  pub client_y: u32,
-  pub ctrl_key: bool,
-  pub layer_x: i32,
-  pub layer_y: i32,
-  pub meta_key: bool,
-  pub movement_x: i32,
-  pub movement_y: i32,
-  pub offset_x: i32,
-  pub offset_y: i32,
-  pub page_x: u32,
-  pub page_y: u32,
-  pub screen_x: u32,
-  pub screen_y: u32,
-  pub shift_key: bool,
-  pub time_stamp: f32,
-  // type is a reserved word
-  pub event_type: String,
-  pub x: u32,
-  pub y: u32,
-}
+// #[derive(Deserialize)]
+// pub struct MouseEvent {
+//   pub alt_key: bool,
+//   pub client_x: u32,
+//   pub client_y: u32,
+//   pub ctrl_key: bool,
+//   pub layer_x: i32,
+//   pub layer_y: i32,
+//   pub meta_key: bool,
+//   pub movement_x: i32,
+//   pub movement_y: i32,
+//   pub offset_x: i32,
+//   pub offset_y: i32,
+//   pub page_x: u32,
+//   pub page_y: u32,
+//   pub screen_x: u32,
+//   pub screen_y: u32,
+//   pub shift_key: bool,
+//   pub time_stamp: f32,
+//   // type is a reserved word
+//   pub event_type: String,
+//   pub x: u32,
+//   pub y: u32,
+// }
 pub type MouseEventHandler<'a> = EventHandler<'a, MouseEvent>;
 
 #[derive(Deserialize)]

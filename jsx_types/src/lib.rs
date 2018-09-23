@@ -4,6 +4,7 @@ extern crate wasm_bindgen;
 #[macro_use]
 extern crate serde_derive;
 extern crate take_mut;
+extern crate web_sys;
 
 use std::collections::HashMap;
 use std::convert::From;
