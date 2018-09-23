@@ -44,7 +44,19 @@ impl BareHtmlToken {
    *   want to get rid of efficiently.
    */
   pub fn get_diff_with(&self, other: &Self) -> Diff {
-    self.get_path_diff_with(other, vec![0])
+    // N.B. diff has to be the reverse order of what we would naturally generate.
+    // I'm not sure if this is the best place to call reverse, but it works.
+    //
+    // The reasoning is that if the diff is:
+    // path - operation
+    // [0]  - delete or insert
+    // [1]  - any diff operation
+    //
+    // if we delete/insert the 0th item, [1] will refer to the wrong item (or no
+    // item.) But in reverse order, it *should* always work. (Does it?)
+    let mut diff = self.get_path_diff_with(other, vec![0]);
+    diff.reverse();
+    diff
   }
 
   fn get_path_diff_with(&self, other: &Self, path: Path) -> Diff {
