@@ -41,7 +41,7 @@ let dom = jsx!(<div foo="bar">
 pub type DomElement {
   // ... other fields
   on_click: Option<Box<FnOnce(ClickEvent) -> ()>>,
-  on_mouse_over: Option<Box<FnOnce(MouseEvent) -> ()>>,
+  on_mouseover: Option<Box<FnOnce(MouseEvent) -> ()>>,
 }
 ```
 

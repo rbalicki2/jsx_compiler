@@ -17,6 +17,7 @@ fn generate_dom_element_tokens(
       (None, None),
       |(mut attr_opt, mut event_opt): (Option<TokenStream>, Option<TokenStream>), (key, val)| {
         // TODO figure out why this is necessary
+        // TODO do this with a macro?
         let key_2: &str = &key;
         match key_2 {
           "on_click" => {
@@ -25,16 +26,16 @@ fn generate_dom_element_tokens(
               event_handlers.on_click = Some(#val);
             });
           },
-          "on_mouse_over" => {
+          "on_mouseover" => {
             event_opt = Some(quote!{
               #event_opt
-              event_handlers.on_mouse_over = Some(#val);
+              event_handlers.on_mouseover = Some(#val);
             });
           },
-          "on_mouse_out" => {
+          "on_mouseout" => {
             event_opt = Some(quote!{
               #event_opt
-              event_handlers.on_mouse_out = Some(#val);
+              event_handlers.on_mouseout = Some(#val);
             });
           },
           "on_input" => {
