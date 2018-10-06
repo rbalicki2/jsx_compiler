@@ -6,6 +6,17 @@ use super::match_group::match_bracketed_group_to_tokens;
 
 type AttributeOrEventHandler = (String, LiteralOrGroup);
 
+macro_rules! match_event {
+  ($key:ident, $val:ident, $attr_opt:ident, $event_opt:ident, $handler_name:ident, $handler_name_string:expr) => {
+    if $key == $handler_name_string {
+      return ($attr_opt, Some(quote!{
+        #$event_opt
+        event_handlers.$handler_name = Some(#$val);
+      }));
+    }
+  };
+}
+
 fn generate_dom_element_tokens(
   node_type: String,
   attributes_or_event_handlers: Vec<AttributeOrEventHandler>,
@@ -15,50 +26,20 @@ fn generate_dom_element_tokens(
     .into_iter()
     .fold(
       (None, None),
-      |(mut attr_opt, mut event_opt): (Option<TokenStream>, Option<TokenStream>), (key, val)| {
-        // TODO figure out why this is necessary
-        // TODO do this with a macro?
-        let key_2: &str = &key;
-        match key_2 {
-          "on_click" => {
-            event_opt = Some(quote!{
-              #event_opt
-              event_handlers.on_click = Some(#val);
-            });
-          },
-          "on_mouseover" => {
-            event_opt = Some(quote!{
-              #event_opt
-              event_handlers.on_mouseover = Some(#val);
-            });
-          },
-          "on_mouseout" => {
-            event_opt = Some(quote!{
-              #event_opt
-              event_handlers.on_mouseout = Some(#val);
-            });
-          },
-          "on_input" => {
-            event_opt = Some(quote!{
-              #event_opt
-              event_handlers.on_input = Some(#val);
-            });
-          },
-          "on_keydown" => {
-            event_opt = Some(quote!{
-              #event_opt
-              event_handlers.on_keydown = Some(#val);
-            });
-          }
-          _ => {
-            attr_opt = Some(quote!{
-              #attr_opt
-              attr_map.insert(#key.into(), #val.into());
-            });
-          }
-        }
-
-        (attr_opt, event_opt)
+      |(attr_opt, event_opt): (Option<TokenStream>, Option<TokenStream>), (key, val)| {
+        match_event!(key, val, attr_opt, event_opt, on_click, "on_click");
+        match_event!(key, val, attr_opt, event_opt, on_mouseover, "on_mouseover");
+        match_event!(key, val, attr_opt, event_opt, on_mouseout, "on_mouseout");
+        match_event!(key, val, attr_opt, event_opt, on_input, "on_input");
+        match_event!(key, val, attr_opt, event_opt, on_keydown, "on_keydown");
+        
+        (
+          Some(quote!{
+            #attr_opt
+            attr_map.insert(#key.into(), #val.into());
+          }),
+          event_opt
+        )
       }
     );
   
