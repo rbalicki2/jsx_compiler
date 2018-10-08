@@ -56,12 +56,12 @@ fn generate_dom_element_tokens(
   let event_handler_assignment = event_handler_assignment
     .map(|token_stream| {
       quote!{{
-        let mut event_handlers = ::jsx_types::events::EventHandlers::new();
+        let mut event_handlers = ::jsx_types::events::EventHandlers::default();
         #token_stream
         event_handlers
       }}
     })
-    .unwrap_or_else(|| quote!{ ::jsx_types::events::EventHandlers::new() });
+    .unwrap_or_else(|| quote!{ ::jsx_types::events::EventHandlers::default() });
 
   let children_vec = quote!{{
     let vec: Vec<::jsx_types::WrappedVector<::jsx_types::HtmlToken>> = vec![#(#children.into()),*];
