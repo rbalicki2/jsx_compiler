@@ -28,6 +28,9 @@ fn generate_dom_element_tokens(
       (None, None),
       |(attr_opt, event_opt): (Option<TokenStream>, Option<TokenStream>), (key, val)| {
         // --Clipboard
+        match_event!(key, val, attr_opt, event_opt, on_copy, "on_copy");
+        match_event!(key, val, attr_opt, event_opt, on_cut, "on_cut");
+        match_event!(key, val, attr_opt, event_opt, on_paste, "on_paste");
         // onCopy
         // onCut
         // onPaste
@@ -78,6 +81,7 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_pointerover, "on_pointerover");
         match_event!(key, val, attr_opt, event_opt, on_pointerout, "on_pointerout");
         // --Selection
+        // !!! Cannot figure out how to trigger in browser
         // onSelect
         // --Touch
         // onTouchCancel
@@ -85,6 +89,7 @@ fn generate_dom_element_tokens(
         // onTouchMove
         // onTouchStart
         // --Scroll
+        match_event!(key, val, attr_opt, event_opt, on_scroll, "on_scroll");
         // onScroll
         // --Wheel
         // onWheel

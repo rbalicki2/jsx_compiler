@@ -3,10 +3,12 @@ pub use web_sys::{
   Element,
   Document,
   Window,
+  ClipboardEvent,
   KeyboardEvent,
   FocusEvent,
   MouseEvent,
   PointerEvent,
+  ScrollAreaEvent,
   InputEvent,
   HtmlElement,
   EventTarget,
@@ -14,18 +16,20 @@ pub use web_sys::{
   Node
 };
 
+pub type ClipboardEventHandler<'a> = EventHandler<'a, ClipboardEvent>;
 pub type KeyboardEventHandler<'a> = EventHandler<'a, KeyboardEvent>;
+pub type InputEventHandler<'a> = EventHandler<'a, InputEvent>;
 pub type FocusEventHandler<'a> = EventHandler<'a, FocusEvent>;
 pub type MouseEventHandler<'a> = EventHandler<'a, MouseEvent>;
 pub type PointerEventHandler<'a> = EventHandler<'a, PointerEvent>;
-pub type InputEventHandler<'a> = EventHandler<'a, InputEvent>;
+pub type ScrollAreaEventHandler<'a> = EventHandler<'a, ScrollAreaEvent>;
 
 #[derive(Default)]
 pub struct EventHandlers<'a> {
   // --Clipboard
-  // onCopy
-  // onCut
-  // onPaste
+  pub on_copy: Option<Box<ClipboardEventHandler<'a>>>,
+  pub on_cut: Option<Box<ClipboardEventHandler<'a>>>,
+  pub on_paste: Option<Box<ClipboardEventHandler<'a>>>,
   // --Composition
   // onCompositionEnd
   // onCompositionStart
@@ -81,7 +85,7 @@ pub struct EventHandlers<'a> {
   // onTouchMove
   // onTouchStart
   // --Scroll
-  // onScroll
+  pub on_scroll: Option<Box<ScrollAreaEventHandler<'a>>>,
   // --Wheel
   // onWheel
   // --Media
