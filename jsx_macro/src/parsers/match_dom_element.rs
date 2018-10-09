@@ -51,9 +51,7 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_click, "on_click");
         match_event!(key, val, attr_opt, event_opt, on_contextmenu, "on_contextmenu");
         match_event!(key, val, attr_opt, event_opt, on_dblclick, "on_dblclick");
-        // onContextMenu
-        // onDoubleClick
-        // onDrag
+        match_event!(key, val, attr_opt, event_opt, on_drag, "on_drag");
         // onDragEnd
         // onDragEnter
         // onDragExit
@@ -61,13 +59,13 @@ fn generate_dom_element_tokens(
         // onDragOver
         // onDragStart
         // onDrop
-        // onMouseDown
-        // onMouseEnter
-        // onMouseLeave
-        // onMouseMove
+        match_event!(key, val, attr_opt, event_opt, on_mousedown, "on_mousedown");
+        match_event!(key, val, attr_opt, event_opt, on_mouseenter, "on_mouseenter");
+        match_event!(key, val, attr_opt, event_opt, on_mouseleave, "on_mouseleave");
+        match_event!(key, val, attr_opt, event_opt, on_mousemove, "on_mousemove");
         match_event!(key, val, attr_opt, event_opt, on_mouseover, "on_mouseover");
         match_event!(key, val, attr_opt, event_opt, on_mouseout, "on_mouseout");
-        // onMouseUp
+        match_event!(key, val, attr_opt, event_opt, on_mouseup, "on_mouseup");
         // --Pointer
         // onPointerDown
         // onPointerMove

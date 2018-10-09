@@ -45,7 +45,7 @@ pub struct EventHandlers<'a> {
   pub on_click: Option<Box<MouseEventHandler<'a>>>,
   pub on_contextmenu: Option<Box<MouseEventHandler<'a>>>,
   pub on_dblclick: Option<Box<MouseEventHandler<'a>>>,
-  // onDrag
+  pub on_drag: Option<Box<MouseEventHandler<'a>>>,
   // onDragEnd
   // onDragEnter
   // onDragExit
@@ -53,13 +53,13 @@ pub struct EventHandlers<'a> {
   // onDragOver
   // onDragStart
   // onDrop
-  // onMouseDown
-  // onMouseEnter
-  // onMouseLeave
-  // onMouseMove
+  pub on_mousedown: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mouseenter: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mouseleave: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mousemove: Option<Box<MouseEventHandler<'a>>>,
   pub on_mouseover: Option<Box<MouseEventHandler<'a>>>,
   pub on_mouseout: Option<Box<MouseEventHandler<'a>>>,
-  // onMouseUp
+  pub on_mouseup: Option<Box<MouseEventHandler<'a>>>,
   // --Pointer
   // onPointerDown
   // onPointerMove
@@ -132,6 +132,12 @@ impl<'a> EventHandlers<'a> {
     let mut v = vec![];
     push_to_vec!(self, v, on_focus, "on_focus");
     push_to_vec!(self, v, on_focus, "on_blur");
+    push_to_vec!(self, v, on_mouseenter, "on_mouseenter");
+    push_to_vec!(self, v, on_mouseleave, "on_mouseleave");
+    push_to_vec!(self, v, on_mouseover, "on_mouseover");
+    push_to_vec!(self, v, on_mouseout, "on_mouseout");
+    push_to_vec!(self, v, on_submit, "on_submit");
+    push_to_vec!(self, v, on_change, "on_change");
     v
   }
 }
