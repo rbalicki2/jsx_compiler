@@ -67,16 +67,16 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_mouseout, "on_mouseout");
         match_event!(key, val, attr_opt, event_opt, on_mouseup, "on_mouseup");
         // --Pointer
-        // onPointerDown
-        // onPointerMove
-        // onPointerUp
+        match_event!(key, val, attr_opt, event_opt, on_pointerdown, "on_pointerdown");
+        match_event!(key, val, attr_opt, event_opt, on_pointermove, "on_pointermove");
+        match_event!(key, val, attr_opt, event_opt, on_pointerup, "on_pointerup");
         // onPointerCancel
         // onGotPointerCapture
         // onLostPointerCapture
-        // onPointerEnter
-        // onPointerLeave
-        // onPointerOver
-        // onPointerOut
+        match_event!(key, val, attr_opt, event_opt, on_pointerenter, "on_pointerenter");
+        match_event!(key, val, attr_opt, event_opt, on_pointerleave, "on_pointerleave");
+        match_event!(key, val, attr_opt, event_opt, on_pointerover, "on_pointerover");
+        match_event!(key, val, attr_opt, event_opt, on_pointerout, "on_pointerout");
         // --Selection
         // onSelect
         // --Touch

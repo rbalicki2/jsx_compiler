@@ -6,6 +6,7 @@ pub use web_sys::{
   KeyboardEvent,
   FocusEvent,
   MouseEvent,
+  PointerEvent,
   InputEvent,
   HtmlElement,
   EventTarget,
@@ -16,6 +17,7 @@ pub use web_sys::{
 pub type KeyboardEventHandler<'a> = EventHandler<'a, KeyboardEvent>;
 pub type FocusEventHandler<'a> = EventHandler<'a, FocusEvent>;
 pub type MouseEventHandler<'a> = EventHandler<'a, MouseEvent>;
+pub type PointerEventHandler<'a> = EventHandler<'a, PointerEvent>;
 pub type InputEventHandler<'a> = EventHandler<'a, InputEvent>;
 
 #[derive(Default)]
@@ -61,16 +63,16 @@ pub struct EventHandlers<'a> {
   pub on_mouseout: Option<Box<MouseEventHandler<'a>>>,
   pub on_mouseup: Option<Box<MouseEventHandler<'a>>>,
   // --Pointer
-  // onPointerDown
-  // onPointerMove
-  // onPointerUp
+  pub on_pointerdown: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointermove: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointerup: Option<Box<PointerEventHandler<'a>>>,
   // onPointerCancel
   // onGotPointerCapture
   // onLostPointerCapture
-  // onPointerEnter
-  // onPointerLeave
-  // onPointerOver
-  // onPointerOut
+  pub on_pointerenter: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointerleave: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointerover: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointerout: Option<Box<PointerEventHandler<'a>>>,
   // --Selection
   // onSelect
   // --Touch
