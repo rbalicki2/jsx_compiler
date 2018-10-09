@@ -118,8 +118,8 @@ fn generate_dom_element_tokens(
         // onVolumeChange
         // onWaiting
         // --Image
-        // onLoad
-        // onError
+        match_event!(key, val, attr_opt, event_opt, on_load, "on_load");
+        match_event!(key, val, attr_opt, event_opt, on_error, "on_error");
         // --Animatin
         // onAnimationStart
         // onAnimationEnd

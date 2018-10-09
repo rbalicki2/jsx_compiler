@@ -16,6 +16,7 @@ pub use web_sys::{
   Node
 };
 
+pub type EventEventHandler<'a> = EventHandler<'a, Event>;
 pub type ClipboardEventHandler<'a> = EventHandler<'a, ClipboardEvent>;
 pub type KeyboardEventHandler<'a> = EventHandler<'a, KeyboardEvent>;
 pub type InputEventHandler<'a> = EventHandler<'a, InputEvent>;
@@ -113,8 +114,8 @@ pub struct EventHandlers<'a> {
   // onVolumeChange
   // onWaiting
   // --Image
-  // onLoad
-  // onError
+  pub on_load: Option<Box<EventEventHandler<'a>>>,
+  pub on_error: Option<Box<EventEventHandler<'a>>>,
   // --Animatin
   // onAnimationStart
   // onAnimationEnd
