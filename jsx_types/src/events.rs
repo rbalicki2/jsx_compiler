@@ -1,12 +1,11 @@
-use std::default::Default;
-
 pub type EventHandler<'a, T> = 'a + FnMut(&T) -> ();
 pub use web_sys::{
   Element,
   Document,
   Window,
-  MouseEvent,
   KeyboardEvent,
+  FocusEvent,
+  MouseEvent,
   InputEvent,
   HtmlElement,
   EventTarget,
@@ -14,10 +13,9 @@ pub use web_sys::{
   Node
 };
 
-pub type MouseEventHandler<'a> = EventHandler<'a, MouseEvent>;
-
 pub type KeyboardEventHandler<'a> = EventHandler<'a, KeyboardEvent>;
-
+pub type FocusEventHandler<'a> = EventHandler<'a, FocusEvent>;
+pub type MouseEventHandler<'a> = EventHandler<'a, MouseEvent>;
 pub type InputEventHandler<'a> = EventHandler<'a, InputEvent>;
 
 #[derive(Default)]
@@ -35,17 +33,18 @@ pub struct EventHandlers<'a> {
   pub on_keypress: Option<Box<KeyboardEventHandler<'a>>>,
   pub on_keyup: Option<Box<KeyboardEventHandler<'a>>>,
   // --Focus
-  // onFocus
-  // onBlur
+  pub on_focus: Option<Box<FocusEventHandler<'a>>>,
+  pub on_blur: Option<Box<FocusEventHandler<'a>>>,
   // --Form
   // onChange
+  pub on_change: Option<Box<InputEventHandler<'a>>>,
   pub on_input: Option<Box<InputEventHandler<'a>>>,
   // onInvalid
-  // onSubmit
+  pub on_submit: Option<Box<InputEventHandler<'a>>>,
   // --Mouse
   pub on_click: Option<Box<MouseEventHandler<'a>>>,
-  // onContextMenu
-  // onDoubleClick
+  pub on_contextmenu: Option<Box<MouseEventHandler<'a>>>,
+  pub on_dblclick: Option<Box<MouseEventHandler<'a>>>,
   // onDrag
   // onDragEnd
   // onDragEnter
@@ -118,4 +117,21 @@ pub struct EventHandlers<'a> {
   // onTransitionEnd
   // --Other
   // onToggle
+}
+
+macro_rules! push_to_vec {
+  ($self_expr:expr, $vec:ident, $handler:ident, $handler_name:expr) => {
+    if let Some(_) = $self_expr.$handler {
+      $vec.push($handler_name);
+    }
+  };
+}
+
+impl<'a> EventHandlers<'a> {
+  pub fn present_handlers(&self) -> Vec<&'static str> {
+    let mut v = vec![];
+    push_to_vec!(self, v, on_focus, "on_focus");
+    push_to_vec!(self, v, on_focus, "on_blur");
+    v
+  }
 }

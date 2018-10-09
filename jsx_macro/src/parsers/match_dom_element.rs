@@ -27,11 +27,104 @@ fn generate_dom_element_tokens(
     .fold(
       (None, None),
       |(attr_opt, event_opt): (Option<TokenStream>, Option<TokenStream>), (key, val)| {
+        // --Clipboard
+        // onCopy
+        // onCut
+        // onPaste
+        // --Composition
+        // onCompositionEnd
+        // onCompositionStart
+        // onCompositionUpdate
+        // --Keyboard
+        match_event!(key, val, attr_opt, event_opt, on_keydown, "on_keydown");
+        match_event!(key, val, attr_opt, event_opt, on_keypress, "on_keypress");
+        match_event!(key, val, attr_opt, event_opt, on_keyup, "on_keyup");
+        // --Focus
+        match_event!(key, val, attr_opt, event_opt, on_focus, "on_focus");
+        match_event!(key, val, attr_opt, event_opt, on_blur, "on_blur");
+        // --Form
+        match_event!(key, val, attr_opt, event_opt, on_change, "on_change");
+        match_event!(key, val, attr_opt, event_opt, on_input, "on_input");
+        // onInvalid
+        match_event!(key, val, attr_opt, event_opt, on_submit, "on_submit");
+        // --Mouse
         match_event!(key, val, attr_opt, event_opt, on_click, "on_click");
+        match_event!(key, val, attr_opt, event_opt, on_contextmenu, "on_contextmenu");
+        match_event!(key, val, attr_opt, event_opt, on_dblclick, "on_dblclick");
+        // onContextMenu
+        // onDoubleClick
+        // onDrag
+        // onDragEnd
+        // onDragEnter
+        // onDragExit
+        // onDragLeave
+        // onDragOver
+        // onDragStart
+        // onDrop
+        // onMouseDown
+        // onMouseEnter
+        // onMouseLeave
+        // onMouseMove
         match_event!(key, val, attr_opt, event_opt, on_mouseover, "on_mouseover");
         match_event!(key, val, attr_opt, event_opt, on_mouseout, "on_mouseout");
-        match_event!(key, val, attr_opt, event_opt, on_input, "on_input");
-        match_event!(key, val, attr_opt, event_opt, on_keydown, "on_keydown");
+        // onMouseUp
+        // --Pointer
+        // onPointerDown
+        // onPointerMove
+        // onPointerUp
+        // onPointerCancel
+        // onGotPointerCapture
+        // onLostPointerCapture
+        // onPointerEnter
+        // onPointerLeave
+        // onPointerOver
+        // onPointerOut
+        // --Selection
+        // onSelect
+        // --Touch
+        // onTouchCancel
+        // onTouchEnd
+        // onTouchMove
+        // onTouchStart
+        // --Scroll
+        // onScroll
+        // --Wheel
+        // onWheel
+        // --Media
+        // onAbort
+        // onCanPlay
+        // onCanPlayThrough
+        // onDurationChange
+        // onEmptied
+        // onEncrypted
+        // onEnded
+        // onError
+        // onLoadedData
+        // onLoadedMetadata
+        // onLoadStart
+        // onPause
+        // onPlay
+        // onPlaying
+        // onProgress
+        // onRateChange
+        // onSeeked
+        // onSeeking
+        // onStalled
+        // onSuspend
+        // onTimeUpdate
+        // onVolumeChange
+        // onWaiting
+        // --Image
+        // onLoad
+        // onError
+        // --Animatin
+        // onAnimationStart
+        // onAnimationEnd
+        // onAnimationIteration
+        // --Transition
+        // onTransitionEnd
+        // --Other
+        // onToggle
         
         (
           Some(quote!{
