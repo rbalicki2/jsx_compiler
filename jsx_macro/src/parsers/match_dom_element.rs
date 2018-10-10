@@ -81,7 +81,7 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_pointerover, "on_pointerover");
         match_event!(key, val, attr_opt, event_opt, on_pointerout, "on_pointerout");
         // --Selection
-        // !!! Cannot figure out how to trigger in browser
+        match_event!(key, val, attr_opt, event_opt, on_select, "on_select");
         // onSelect
         // --Touch
         // onTouchCancel
@@ -120,14 +120,15 @@ fn generate_dom_element_tokens(
         // --Image
         match_event!(key, val, attr_opt, event_opt, on_load, "on_load");
         match_event!(key, val, attr_opt, event_opt, on_error, "on_error");
-        // --Animatin
-        // onAnimationStart
-        // onAnimationEnd
-        // onAnimationIteration
+        // --Animation
+        match_event!(key, val, attr_opt, event_opt, on_animation_start, "on_animation_start");
+        match_event!(key, val, attr_opt, event_opt, on_animation_end, "on_animation_end");
+        match_event!(key, val, attr_opt, event_opt, on_animation_iteration, "on_animation_iteration");
         // --Transition
         // onTransitionEnd
         // --Other
         // onToggle
+        match_event!(key, val, attr_opt, event_opt, on_toggle, "on_toggle");
         
         (
           Some(quote!{

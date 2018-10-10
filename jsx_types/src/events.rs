@@ -1,8 +1,5 @@
 pub type EventHandler<'a, T> = 'a + FnMut(&T) -> ();
-pub use web_sys::{
-  Element,
-  Document,
-  Window,
+use web_sys::{
   ClipboardEvent,
   KeyboardEvent,
   FocusEvent,
@@ -10,13 +7,11 @@ pub use web_sys::{
   PointerEvent,
   ScrollAreaEvent,
   InputEvent,
-  HtmlElement,
-  EventTarget,
-  Event,
-  Node
+  AnimationEvent,
+  UiEvent,
 };
 
-pub type EventEventHandler<'a> = EventHandler<'a, Event>;
+pub type UiEventHandler<'a> = EventHandler<'a, UiEvent>;
 pub type ClipboardEventHandler<'a> = EventHandler<'a, ClipboardEvent>;
 pub type KeyboardEventHandler<'a> = EventHandler<'a, KeyboardEvent>;
 pub type InputEventHandler<'a> = EventHandler<'a, InputEvent>;
@@ -24,6 +19,7 @@ pub type FocusEventHandler<'a> = EventHandler<'a, FocusEvent>;
 pub type MouseEventHandler<'a> = EventHandler<'a, MouseEvent>;
 pub type PointerEventHandler<'a> = EventHandler<'a, PointerEvent>;
 pub type ScrollAreaEventHandler<'a> = EventHandler<'a, ScrollAreaEvent>;
+pub type AnimationEventHandler<'a> = EventHandler<'a, AnimationEvent>;
 
 #[derive(Default)]
 pub struct EventHandlers<'a> {
@@ -79,7 +75,7 @@ pub struct EventHandlers<'a> {
   pub on_pointerover: Option<Box<PointerEventHandler<'a>>>,
   pub on_pointerout: Option<Box<PointerEventHandler<'a>>>,
   // --Selection
-  // onSelect
+  pub on_select: Option<Box<UiEventHandler<'a>>>,
   // --Touch
   // onTouchCancel
   // onTouchEnd
@@ -114,16 +110,16 @@ pub struct EventHandlers<'a> {
   // onVolumeChange
   // onWaiting
   // --Image
-  pub on_load: Option<Box<EventEventHandler<'a>>>,
-  pub on_error: Option<Box<EventEventHandler<'a>>>,
-  // --Animatin
-  // onAnimationStart
-  // onAnimationEnd
-  // onAnimationIteration
+  pub on_load: Option<Box<UiEventHandler<'a>>>,
+  pub on_error: Option<Box<UiEventHandler<'a>>>,
+  // --Animation
+  pub on_animation_start: Option<Box<AnimationEventHandler<'a>>>,
+  pub on_animation_end: Option<Box<AnimationEventHandler<'a>>>,
+  pub on_animation_iteration: Option<Box<AnimationEventHandler<'a>>>,
   // --Transition
   // onTransitionEnd
   // --Other
-  // onToggle
+  pub on_toggle: Option<Box<UiEventHandler<'a>>>,
 }
 
 macro_rules! push_to_vec {

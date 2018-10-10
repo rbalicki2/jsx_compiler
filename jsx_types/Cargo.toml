@@ -27,6 +27,7 @@ web-sys = { version = "0.3.1", features = [
   "MouseEvent",
   "PointerEvent",
   "ScrollAreaEvent",
+  "AnimationEvent",
   "EventTarget",
   "Node",
   "NodeList",
