@@ -75,9 +75,9 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_pointer_down, "on_pointer_down");
         match_event!(key, val, attr_opt, event_opt, on_pointer_move, "on_pointer_move");
         match_event!(key, val, attr_opt, event_opt, on_pointer_up, "on_pointer_up");
-        // onPointerCancel
-        // onGotPointerCapture
-        // onLostPointerCapture
+        match_event!(key, val, attr_opt, event_opt, on_pointer_cancel, "on_pointer_cancel");
+        match_event!(key, val, attr_opt, event_opt, on_got_pointer_capture, "on_got_pointer_capture");
+        match_event!(key, val, attr_opt, event_opt, on_lost_pointer_capture, "on_lost_pointer_capture");
         match_event!(key, val, attr_opt, event_opt, on_pointer_enter, "on_pointer_enter");
         match_event!(key, val, attr_opt, event_opt, on_pointer_leave, "on_pointer_leave");
         match_event!(key, val, attr_opt, event_opt, on_pointer_over, "on_pointer_over");
@@ -126,9 +126,8 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_animation_end, "on_animation_end");
         match_event!(key, val, attr_opt, event_opt, on_animation_iteration, "on_animation_iteration");
         // --Transition
-        // onTransitionEnd
+        match_event!(key, val, attr_opt, event_opt, on_transition_end, "on_transition_end");
         // --Other
-        // onToggle
         match_event!(key, val, attr_opt, event_opt, on_toggle, "on_toggle");
         
         (

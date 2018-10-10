@@ -10,6 +10,7 @@ use web_sys::{
   ScrollAreaEvent,
   InputEvent,
   AnimationEvent,
+  TransitionEvent,
 };
 
 pub type UiEventHandler<'a> = EventHandler<'a, UiEvent>;
@@ -22,6 +23,7 @@ pub type PointerEventHandler<'a> = EventHandler<'a, PointerEvent>;
 pub type TouchEventHandler<'a> = EventHandler<'a, TouchEvent>;
 pub type ScrollAreaEventHandler<'a> = EventHandler<'a, ScrollAreaEvent>;
 pub type AnimationEventHandler<'a> = EventHandler<'a, AnimationEvent>;
+pub type TransitionEventHandler<'a> = EventHandler<'a, TransitionEvent>;
 
 #[derive(Default)]
 pub struct EventHandlers<'a> {
@@ -41,7 +43,6 @@ pub struct EventHandlers<'a> {
   pub on_focus: Option<Box<FocusEventHandler<'a>>>,
   pub on_blur: Option<Box<FocusEventHandler<'a>>>,
   // --Form
-  // onChange
   pub on_change: Option<Box<InputEventHandler<'a>>>,
   pub on_input: Option<Box<InputEventHandler<'a>>>,
   // onInvalid
@@ -71,9 +72,9 @@ pub struct EventHandlers<'a> {
   pub on_pointer_down: Option<Box<PointerEventHandler<'a>>>,
   pub on_pointer_move: Option<Box<PointerEventHandler<'a>>>,
   pub on_pointer_up: Option<Box<PointerEventHandler<'a>>>,
-  // onPointerCancel
-  // onGotPointerCapture
-  // onLostPointerCapture
+  pub on_pointer_cancel: Option<Box<PointerEventHandler<'a>>>,
+  pub on_got_pointer_capture: Option<Box<PointerEventHandler<'a>>>,
+  pub on_lost_pointer_capture: Option<Box<PointerEventHandler<'a>>>,
   pub on_pointer_enter: Option<Box<PointerEventHandler<'a>>>,
   pub on_pointer_leave: Option<Box<PointerEventHandler<'a>>>,
   pub on_pointer_over: Option<Box<PointerEventHandler<'a>>>,
@@ -121,6 +122,7 @@ pub struct EventHandlers<'a> {
   pub on_animation_end: Option<Box<AnimationEventHandler<'a>>>,
   pub on_animation_iteration: Option<Box<AnimationEventHandler<'a>>>,
   // --Transition
+  pub on_transition_end: Option<Box<TransitionEventHandler<'a>>>,
   // onTransitionEnd
   // --Other
   pub on_toggle: Option<Box<UiEventHandler<'a>>>,
