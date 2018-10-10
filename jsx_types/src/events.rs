@@ -2,13 +2,14 @@ pub type EventHandler<'a, T> = 'a + FnMut(&T) -> ();
 use web_sys::{
   ClipboardEvent,
   KeyboardEvent,
+  UiEvent,
   FocusEvent,
   MouseEvent,
   PointerEvent,
+  TouchEvent,
   ScrollAreaEvent,
   InputEvent,
   AnimationEvent,
-  UiEvent,
 };
 
 pub type UiEventHandler<'a> = EventHandler<'a, UiEvent>;
@@ -18,6 +19,7 @@ pub type InputEventHandler<'a> = EventHandler<'a, InputEvent>;
 pub type FocusEventHandler<'a> = EventHandler<'a, FocusEvent>;
 pub type MouseEventHandler<'a> = EventHandler<'a, MouseEvent>;
 pub type PointerEventHandler<'a> = EventHandler<'a, PointerEvent>;
+pub type TouchEventHandler<'a> = EventHandler<'a, TouchEvent>;
 pub type ScrollAreaEventHandler<'a> = EventHandler<'a, ScrollAreaEvent>;
 pub type AnimationEventHandler<'a> = EventHandler<'a, AnimationEvent>;
 
@@ -32,9 +34,9 @@ pub struct EventHandlers<'a> {
   // onCompositionStart
   // onCompositionUpdate
   // --Keyboard
-  pub on_keydown: Option<Box<KeyboardEventHandler<'a>>>,
-  pub on_keypress: Option<Box<KeyboardEventHandler<'a>>>,
-  pub on_keyup: Option<Box<KeyboardEventHandler<'a>>>,
+  pub on_key_down: Option<Box<KeyboardEventHandler<'a>>>,
+  pub on_key_press: Option<Box<KeyboardEventHandler<'a>>>,
+  pub on_key_up: Option<Box<KeyboardEventHandler<'a>>>,
   // --Focus
   pub on_focus: Option<Box<FocusEventHandler<'a>>>,
   pub on_blur: Option<Box<FocusEventHandler<'a>>>,
@@ -46,8 +48,8 @@ pub struct EventHandlers<'a> {
   pub on_submit: Option<Box<InputEventHandler<'a>>>,
   // --Mouse
   pub on_click: Option<Box<MouseEventHandler<'a>>>,
-  pub on_contextmenu: Option<Box<MouseEventHandler<'a>>>,
-  pub on_dblclick: Option<Box<MouseEventHandler<'a>>>,
+  pub on_context_menu: Option<Box<MouseEventHandler<'a>>>,
+  pub on_dbl_click: Option<Box<MouseEventHandler<'a>>>,
   pub on_drag: Option<Box<MouseEventHandler<'a>>>,
   // onDragEnd
   // onDragEnter
@@ -56,31 +58,31 @@ pub struct EventHandlers<'a> {
   // onDragOver
   // onDragStart
   // onDrop
-  pub on_mousedown: Option<Box<MouseEventHandler<'a>>>,
-  pub on_mouseenter: Option<Box<MouseEventHandler<'a>>>,
-  pub on_mouseleave: Option<Box<MouseEventHandler<'a>>>,
-  pub on_mousemove: Option<Box<MouseEventHandler<'a>>>,
-  pub on_mouseover: Option<Box<MouseEventHandler<'a>>>,
-  pub on_mouseout: Option<Box<MouseEventHandler<'a>>>,
-  pub on_mouseup: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mouse_down: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mouse_enter: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mouse_leave: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mouse_move: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mouse_over: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mouse_out: Option<Box<MouseEventHandler<'a>>>,
+  pub on_mouse_up: Option<Box<MouseEventHandler<'a>>>,
   // --Pointer
-  pub on_pointerdown: Option<Box<PointerEventHandler<'a>>>,
-  pub on_pointermove: Option<Box<PointerEventHandler<'a>>>,
-  pub on_pointerup: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointer_down: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointer_move: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointer_up: Option<Box<PointerEventHandler<'a>>>,
   // onPointerCancel
   // onGotPointerCapture
   // onLostPointerCapture
-  pub on_pointerenter: Option<Box<PointerEventHandler<'a>>>,
-  pub on_pointerleave: Option<Box<PointerEventHandler<'a>>>,
-  pub on_pointerover: Option<Box<PointerEventHandler<'a>>>,
-  pub on_pointerout: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointer_enter: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointer_leave: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointer_over: Option<Box<PointerEventHandler<'a>>>,
+  pub on_pointer_out: Option<Box<PointerEventHandler<'a>>>,
   // --Selection
   pub on_select: Option<Box<UiEventHandler<'a>>>,
   // --Touch
-  // onTouchCancel
-  // onTouchEnd
-  // onTouchMove
-  // onTouchStart
+  pub on_touch_cancel: Option<Box<TouchEventHandler<'a>>>,
+  pub on_touch_end: Option<Box<TouchEventHandler<'a>>>,
+  pub on_touch_move: Option<Box<TouchEventHandler<'a>>>,
+  pub on_touch_start: Option<Box<TouchEventHandler<'a>>>,
   // --Scroll
   pub on_scroll: Option<Box<ScrollAreaEventHandler<'a>>>,
   // --Wheel
@@ -128,19 +130,4 @@ macro_rules! push_to_vec {
       $vec.push($handler_name);
     }
   };
-}
-
-impl<'a> EventHandlers<'a> {
-  pub fn present_handlers(&self) -> Vec<&'static str> {
-    let mut v = vec![];
-    push_to_vec!(self, v, on_focus, "on_focus");
-    push_to_vec!(self, v, on_focus, "on_blur");
-    push_to_vec!(self, v, on_mouseenter, "on_mouseenter");
-    push_to_vec!(self, v, on_mouseleave, "on_mouseleave");
-    push_to_vec!(self, v, on_mouseover, "on_mouseover");
-    push_to_vec!(self, v, on_mouseout, "on_mouseout");
-    push_to_vec!(self, v, on_submit, "on_submit");
-    push_to_vec!(self, v, on_change, "on_change");
-    v
-  }
 }

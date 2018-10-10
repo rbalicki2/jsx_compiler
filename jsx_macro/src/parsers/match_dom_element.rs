@@ -39,9 +39,9 @@ fn generate_dom_element_tokens(
         // onCompositionStart
         // onCompositionUpdate
         // --Keyboard
-        match_event!(key, val, attr_opt, event_opt, on_keydown, "on_keydown");
-        match_event!(key, val, attr_opt, event_opt, on_keypress, "on_keypress");
-        match_event!(key, val, attr_opt, event_opt, on_keyup, "on_keyup");
+        match_event!(key, val, attr_opt, event_opt, on_key_down, "on_key_down");
+        match_event!(key, val, attr_opt, event_opt, on_key_press, "on_key_press");
+        match_event!(key, val, attr_opt, event_opt, on_key_up, "on_key_up");
         // --Focus
         match_event!(key, val, attr_opt, event_opt, on_focus, "on_focus");
         match_event!(key, val, attr_opt, event_opt, on_blur, "on_blur");
@@ -52,8 +52,8 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_submit, "on_submit");
         // --Mouse
         match_event!(key, val, attr_opt, event_opt, on_click, "on_click");
-        match_event!(key, val, attr_opt, event_opt, on_contextmenu, "on_contextmenu");
-        match_event!(key, val, attr_opt, event_opt, on_dblclick, "on_dblclick");
+        match_event!(key, val, attr_opt, event_opt, on_context_menu, "on_contextmenu");
+        match_event!(key, val, attr_opt, event_opt, on_dbl_click, "on_dblclick");
         match_event!(key, val, attr_opt, event_opt, on_drag, "on_drag");
         // onDragEnd
         // onDragEnter
@@ -62,32 +62,31 @@ fn generate_dom_element_tokens(
         // onDragOver
         // onDragStart
         // onDrop
-        match_event!(key, val, attr_opt, event_opt, on_mousedown, "on_mousedown");
-        match_event!(key, val, attr_opt, event_opt, on_mouseenter, "on_mouseenter");
-        match_event!(key, val, attr_opt, event_opt, on_mouseleave, "on_mouseleave");
-        match_event!(key, val, attr_opt, event_opt, on_mousemove, "on_mousemove");
-        match_event!(key, val, attr_opt, event_opt, on_mouseover, "on_mouseover");
-        match_event!(key, val, attr_opt, event_opt, on_mouseout, "on_mouseout");
-        match_event!(key, val, attr_opt, event_opt, on_mouseup, "on_mouseup");
+        match_event!(key, val, attr_opt, event_opt, on_mouse_down, "on_mouse_down");
+        match_event!(key, val, attr_opt, event_opt, on_mouse_enter, "on_mouse_enter");
+        match_event!(key, val, attr_opt, event_opt, on_mouse_leave, "on_mouse_leave");
+        match_event!(key, val, attr_opt, event_opt, on_mouse_move, "on_mouse_move");
+        match_event!(key, val, attr_opt, event_opt, on_mouse_over, "on_mouse_over");
+        match_event!(key, val, attr_opt, event_opt, on_mouse_out, "on_mouse_out");
+        match_event!(key, val, attr_opt, event_opt, on_mouse_up, "on_mouse_up");
         // --Pointer
-        match_event!(key, val, attr_opt, event_opt, on_pointerdown, "on_pointerdown");
-        match_event!(key, val, attr_opt, event_opt, on_pointermove, "on_pointermove");
-        match_event!(key, val, attr_opt, event_opt, on_pointerup, "on_pointerup");
+        match_event!(key, val, attr_opt, event_opt, on_pointer_down, "on_pointer_down");
+        match_event!(key, val, attr_opt, event_opt, on_pointer_move, "on_pointer_move");
+        match_event!(key, val, attr_opt, event_opt, on_pointer_up, "on_pointer_up");
         // onPointerCancel
         // onGotPointerCapture
         // onLostPointerCapture
-        match_event!(key, val, attr_opt, event_opt, on_pointerenter, "on_pointerenter");
-        match_event!(key, val, attr_opt, event_opt, on_pointerleave, "on_pointerleave");
-        match_event!(key, val, attr_opt, event_opt, on_pointerover, "on_pointerover");
-        match_event!(key, val, attr_opt, event_opt, on_pointerout, "on_pointerout");
+        match_event!(key, val, attr_opt, event_opt, on_pointer_enter, "on_pointer_enter");
+        match_event!(key, val, attr_opt, event_opt, on_pointer_leave, "on_pointer_leave");
+        match_event!(key, val, attr_opt, event_opt, on_pointer_over, "on_pointer_over");
+        match_event!(key, val, attr_opt, event_opt, on_pointer_out, "on_pointer_out");
         // --Selection
         match_event!(key, val, attr_opt, event_opt, on_select, "on_select");
-        // onSelect
         // --Touch
-        // onTouchCancel
-        // onTouchEnd
-        // onTouchMove
-        // onTouchStart
+        match_event!(key, val, attr_opt, event_opt, on_touch_cancel, "on_touch_cancel");
+        match_event!(key, val, attr_opt, event_opt, on_touch_end, "on_touch_end");
+        match_event!(key, val, attr_opt, event_opt, on_touch_move, "on_touch_move");
+        match_event!(key, val, attr_opt, event_opt, on_touch_start, "on_touch_start");
         // --Scroll
         match_event!(key, val, attr_opt, event_opt, on_scroll, "on_scroll");
         // onScroll
