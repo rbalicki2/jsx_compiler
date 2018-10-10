@@ -49,8 +49,8 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_submit, "on_submit");
         // --Mouse
         match_event!(key, val, attr_opt, event_opt, on_click, "on_click");
-        match_event!(key, val, attr_opt, event_opt, on_context_menu, "on_contextmenu");
-        match_event!(key, val, attr_opt, event_opt, on_dbl_click, "on_dblclick");
+        match_event!(key, val, attr_opt, event_opt, on_context_menu, "on_context_menu");
+        match_event!(key, val, attr_opt, event_opt, on_dbl_click, "on_dbl_click");
 
         match_event!(key, val, attr_opt, event_opt, on_drag, "on_drag");
         match_event!(key, val, attr_opt, event_opt, on_drag_end, "on_drag_end");
