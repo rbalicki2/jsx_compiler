@@ -45,7 +45,7 @@ pub struct EventHandlers<'a> {
   // --Form
   pub on_change: Option<Box<InputEventHandler<'a>>>,
   pub on_input: Option<Box<InputEventHandler<'a>>>,
-  // onInvalid
+  pub on_invalid: Option<Box<InputEventHandler<'a>>>,
   pub on_submit: Option<Box<InputEventHandler<'a>>>,
   // --Mouse
   pub on_click: Option<Box<MouseEventHandler<'a>>>,
@@ -86,7 +86,6 @@ pub struct EventHandlers<'a> {
   pub on_touch_end: Option<Box<TouchEventHandler<'a>>>,
   pub on_touch_move: Option<Box<TouchEventHandler<'a>>>,
   pub on_touch_start: Option<Box<TouchEventHandler<'a>>>,
-  // --Scroll
   pub on_scroll: Option<Box<ScrollAreaEventHandler<'a>>>,
   // --Wheel
   // onWheel
@@ -123,7 +122,6 @@ pub struct EventHandlers<'a> {
   pub on_animation_iteration: Option<Box<AnimationEventHandler<'a>>>,
   // --Transition
   pub on_transition_end: Option<Box<TransitionEventHandler<'a>>>,
-  // onTransitionEnd
   // --Other
   pub on_toggle: Option<Box<UiEventHandler<'a>>>,
 }

@@ -31,9 +31,6 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_copy, "on_copy");
         match_event!(key, val, attr_opt, event_opt, on_cut, "on_cut");
         match_event!(key, val, attr_opt, event_opt, on_paste, "on_paste");
-        // onCopy
-        // onCut
-        // onPaste
         // --Composition
         // onCompositionEnd
         // onCompositionStart
@@ -48,7 +45,7 @@ fn generate_dom_element_tokens(
         // --Form
         match_event!(key, val, attr_opt, event_opt, on_change, "on_change");
         match_event!(key, val, attr_opt, event_opt, on_input, "on_input");
-        // onInvalid
+        match_event!(key, val, attr_opt, event_opt, on_invalid, "on_invalid");
         match_event!(key, val, attr_opt, event_opt, on_submit, "on_submit");
         // --Mouse
         match_event!(key, val, attr_opt, event_opt, on_click, "on_click");
@@ -91,7 +88,6 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_touch_start, "on_touch_start");
         // --Scroll
         match_event!(key, val, attr_opt, event_opt, on_scroll, "on_scroll");
-        // onScroll
         // --Wheel
         // onWheel
         // --Media
