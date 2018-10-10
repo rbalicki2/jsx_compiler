@@ -50,14 +50,16 @@ pub struct EventHandlers<'a> {
   pub on_click: Option<Box<MouseEventHandler<'a>>>,
   pub on_context_menu: Option<Box<MouseEventHandler<'a>>>,
   pub on_dbl_click: Option<Box<MouseEventHandler<'a>>>,
+
   pub on_drag: Option<Box<MouseEventHandler<'a>>>,
-  // onDragEnd
-  // onDragEnter
-  // onDragExit
-  // onDragLeave
-  // onDragOver
-  // onDragStart
-  // onDrop
+  pub on_drag_end: Option<Box<MouseEventHandler<'a>>>,
+  pub on_drag_enter: Option<Box<MouseEventHandler<'a>>>,
+  pub on_drag_exit: Option<Box<MouseEventHandler<'a>>>,
+  pub on_drag_leave: Option<Box<MouseEventHandler<'a>>>,
+  pub on_drag_over: Option<Box<MouseEventHandler<'a>>>,
+  pub on_drag_start: Option<Box<MouseEventHandler<'a>>>,
+  pub on_drop: Option<Box<MouseEventHandler<'a>>>,
+
   pub on_mouse_down: Option<Box<MouseEventHandler<'a>>>,
   pub on_mouse_enter: Option<Box<MouseEventHandler<'a>>>,
   pub on_mouse_leave: Option<Box<MouseEventHandler<'a>>>,

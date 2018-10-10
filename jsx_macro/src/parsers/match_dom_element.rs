@@ -54,14 +54,16 @@ fn generate_dom_element_tokens(
         match_event!(key, val, attr_opt, event_opt, on_click, "on_click");
         match_event!(key, val, attr_opt, event_opt, on_context_menu, "on_contextmenu");
         match_event!(key, val, attr_opt, event_opt, on_dbl_click, "on_dblclick");
+
         match_event!(key, val, attr_opt, event_opt, on_drag, "on_drag");
-        // onDragEnd
-        // onDragEnter
-        // onDragExit
-        // onDragLeave
-        // onDragOver
-        // onDragStart
-        // onDrop
+        match_event!(key, val, attr_opt, event_opt, on_drag_end, "on_drag_end");
+        match_event!(key, val, attr_opt, event_opt, on_drag_enter, "on_drag_enter");
+        match_event!(key, val, attr_opt, event_opt, on_drag_exit, "on_drag_exit");
+        match_event!(key, val, attr_opt, event_opt, on_drag_leave, "on_drag_leave");
+        match_event!(key, val, attr_opt, event_opt, on_drag_over, "on_drag_over");
+        match_event!(key, val, attr_opt, event_opt, on_drag_start, "on_drag_start");
+        match_event!(key, val, attr_opt, event_opt, on_drop, "on_drop");
+
         match_event!(key, val, attr_opt, event_opt, on_mouse_down, "on_mouse_down");
         match_event!(key, val, attr_opt, event_opt, on_mouse_enter, "on_mouse_enter");
         match_event!(key, val, attr_opt, event_opt, on_mouse_leave, "on_mouse_leave");
