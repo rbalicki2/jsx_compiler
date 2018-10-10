@@ -189,7 +189,10 @@ impl AsInnerHtml for BareDomElement {
   fn as_inner_html(&self) -> String {
     let attr_str: String = self.attributes
       .iter()
-      .map(|(key, val)| format!("{}=\"{}\"", key, val))
+      .map(|(key, val)|
+        val.clone().map(|v| format!("{}=\"{}\"", key, v))
+          .unwrap_or_else(|| key.to_string())
+      )
       .collect::<Vec<String>>()
       .join(" ");
 

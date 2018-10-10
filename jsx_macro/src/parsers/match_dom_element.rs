@@ -4,7 +4,7 @@ use super::util::{match_punct, match_ident, match_group, match_literal};
 use super::match_string::match_string;
 use super::match_group::match_bracketed_group_to_tokens;
 
-type AttributeOrEventHandler = (String, LiteralOrGroup);
+type AttributeOrEventHandler = (String, Option<LiteralOrGroup>);
 
 macro_rules! match_event {
   ($key:ident, $val:ident, $attr_opt:ident, $event_opt:ident, $handler_name:ident, $handler_name_string:expr) => {
@@ -126,13 +126,27 @@ fn generate_dom_element_tokens(
         // --Other
         match_event!(key, val, attr_opt, event_opt, on_toggle, "on_toggle");
         
-        (
-          Some(quote!{
-            #attr_opt
-            attr_map.insert(#key.into(), #val.into());
-          }),
-          event_opt
-        )
+        // We did not match an event; thus, it must be a regular attribute.
+        // The value must implement Into<String>
+
+        // N.B. #val expands to an empty string (or no tokens) if val == None
+        if val.is_some() {
+          (
+            Some(quote!{
+              #attr_opt
+              attr_map.insert(#key.into(), Some(#val.into()));
+            }),
+            event_opt
+          )
+        } else {
+          (
+            Some(quote!{
+              #attr_opt
+              attr_map.insert(#key.into(), None);
+            }),
+            event_opt
+          )
+        }
       }
     );
   
@@ -176,23 +190,28 @@ fn generate_dom_element_tokens(
 
 named!(
   match_attribute <TokenTreeSlice, AttributeOrEventHandler>,
-  map!(
-    tuple!(
-      apply!(match_ident, None, false),
-      apply!(match_punct, Some('='), None, vec![]),
-      alt!(
-        map!(
-          apply!(match_group, Some(Delimiter::Brace)),
-          |group| group.into()
-        )
-          | map!(
-            call!(match_literal),
-            |literal| literal.into()
+  alt!(
+    map!(
+      tuple!(
+        apply!(match_ident, None, false),
+        apply!(match_punct, Some('='), None, vec![]),
+        alt!(
+          map!(
+            apply!(match_group, Some(Delimiter::Brace)),
+            |group| group.into()
           )
+            | map!(
+              call!(match_literal),
+              |literal| literal.into()
+            )
+        )
+      ),
+      |(attr_name, _, lit_or_group)| (attr_name, Some(lit_or_group))
+    )
+      | map!(
+        apply!(match_ident, None, false),
+        |s| (s, None)
       )
-    ),
-    // drop the equal sign
-    |x| (x.0, x.2)
   )
 );
 
@@ -250,6 +269,7 @@ named!(
       match_closing_tag
     ),
     |s| {
+      // TODO can we assert this in a way that feels native to nom?
       let opening_tag = s.0;
       assert_eq!(opening_tag.0, s.2);
       let children = s.1;

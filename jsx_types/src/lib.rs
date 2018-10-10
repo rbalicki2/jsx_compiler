@@ -106,7 +106,11 @@ impl<'a> AsInnerHtml for DomElement<'a> {
   fn as_inner_html(&self) -> String {
     let attr_str: String = self.attributes
       .iter()
-      .map(|(key, val)| format!("{}=\"{}\"", key, val))
+      .map(|(key, val)|
+        // TODO figure out why we're cloning here!
+        val.clone().map(|v| format!("{}=\"{}\"", key, v))
+          .unwrap_or_else(|| key.to_string())
+      )
       .collect::<Vec<String>>()
       .join(" ");
 
@@ -138,7 +142,7 @@ impl<'a> fmt::Debug for DomElement<'a> {
   }
 }
 
-pub type Attributes = HashMap<String, String>;
+pub type Attributes = HashMap<String, Option<String>>;
 
 impl<'a> From<HtmlToken<'a>> for WrappedVector<HtmlToken<'a>> {
   fn from(t: HtmlToken<'a>) -> Self {
