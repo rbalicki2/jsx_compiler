@@ -150,6 +150,13 @@ impl<'a> From<HtmlToken<'a>> for WrappedVector<HtmlToken<'a>> {
   }
 }
 
+impl<'a, T> From<Option<Vec<T>>> for WrappedVector<HtmlToken<'a>> where T: Into<HtmlToken<'a>> {
+  fn from(opt: Option<Vec<T>>) -> Self {
+    let vec = opt.into_iter().flat_map(|v| v.into_iter().map(|item| item.into())).collect();
+    WrappedVector(vec)
+  }
+}
+
 impl<'a, T> From<Option<T>> for HtmlToken<'a> where T: Into<HtmlToken<'a>> {
   fn from(opt: Option<T>) -> Self {
     match opt {
@@ -174,6 +181,13 @@ impl<'a> From<String> for HtmlToken<'a> {
 impl<'a> From<String> for WrappedVector<HtmlToken<'a>> {
   fn from(s: String) -> Self {
     WrappedVector(vec![s.into()])
+  }
+}
+
+impl<'a, T> From<Vec<T>> for WrappedVector<HtmlToken<'a>> where T: Into<HtmlToken<'a>> {
+  fn from(s: Vec<T>) -> Self {
+    let vec = s.into_iter().map(|item| item.into()).collect();
+    WrappedVector(vec)
   }
 }
 
@@ -234,12 +248,6 @@ impl<'a> From<char> for HtmlToken<'a> {
 impl<'a> From<char> for WrappedVector<HtmlToken<'a>> {
   fn from(c: char) -> Self {
     WrappedVector(vec![c.into()])
-  }
-}
-
-impl<'a> From<Vec<HtmlToken<'a>>> for WrappedVector<HtmlToken<'a>> {
-  fn from(v: Vec<HtmlToken<'a>>) -> Self {
-    WrappedVector(v)
   }
 }
 

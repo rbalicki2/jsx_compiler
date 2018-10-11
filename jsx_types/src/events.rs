@@ -125,11 +125,3 @@ pub struct EventHandlers<'a> {
   // --Other
   pub on_toggle: Option<Box<UiEventHandler<'a>>>,
 }
-
-macro_rules! push_to_vec {
-  ($self_expr:expr, $vec:ident, $handler:ident, $handler_name:expr) => {
-    if let Some(_) = $self_expr.$handler {
-      $vec.push($handler_name);
-    }
-  };
-}
